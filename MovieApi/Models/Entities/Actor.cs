@@ -9,6 +9,6 @@ public class Actor
     // ForeignKey to Movie
     public int MovieId { get; set; }
 
-    // Navigation property N:M throught MovieActor
-    public List<Actor> MovieActors { get; set; } = new List<Actor>();
+    // Navigation property N:M throught ActorMovie
+    public ICollection<Movie> Movies { get; set; } = new List<Movie>();
 }

@@ -34,11 +34,17 @@ namespace MovieApi.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     BirthYear = table.Column<int>(type: "int", nullable: false),
-                    MovieId = table.Column<int>(type: "int", nullable: false)
+                    MovieId = table.Column<int>(type: "int", nullable: false),
+                    ActorId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Actors", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Actors_Actors_ActorId",
+                        column: x => x.ActorId,
+                        principalTable: "Actors",
+                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_Actors_Movies_MovieId",
                         column: x => x.MovieId,
@@ -90,6 +96,11 @@ namespace MovieApi.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Actors_ActorId",
+                table: "Actors",
+                column: "ActorId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Actors_MovieId",
