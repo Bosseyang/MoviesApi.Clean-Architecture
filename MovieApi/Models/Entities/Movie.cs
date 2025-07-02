@@ -14,9 +14,9 @@ public class Movie
     public MovieDetails MovieDetails { get; set; } = null!;
 
     // 1:M Relation with Review, Each Movie has Many Reviews
-    public List<Review> Reviews { get; set; } = null!;
+    public ICollection<Review> Reviews { get; set; } = new List<Review>();  
 
-    // M:N Relation with Actor through connection? tabel ActorMovie, Each Movie can have several Actors and Each Actor can be in Several Movies
+    // M:N Relation with Actor through connection? table ActorMovie, Each Movie can have several Actors and Each Actor can be in Several Movies
     public ICollection<Actor> Actors { get; set; } = new List<Actor>();
 
 }
