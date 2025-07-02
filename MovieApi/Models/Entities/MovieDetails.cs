@@ -6,4 +6,10 @@ public class MovieDetails
     public string Synopsis { get; set; } = null!;
     public string Language { get; set; } = null!;
     public int Budget { get; set; }
+
+    // ForeignKey for Movie 1:1 relation
+    public int MovieId { get; set; }
+
+    // Navigation 1:1 relation to Movie
+    public Movie Movie { get; set; }
 }

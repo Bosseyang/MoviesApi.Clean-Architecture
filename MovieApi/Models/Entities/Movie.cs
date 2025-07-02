@@ -10,4 +10,13 @@ public class Movie
     public string Genre { get; set; } = null!;
     public int Duration { get; set; }
 
+    // 1:1 Relation with MovieDetails, Each Movie has One MovieDetail
+    public MovieDetails MovieDetails { get; set; } = null!;
+
+    // 1:M Relation with Review, Each Movie has Many Reviews
+    public List<Review> Reviews { get; set; } = null!;
+
+    // M:N Relation with Actor, Each Movie can have several Actors and Each Actor can be in Several Movies
+    public List<Actor> MovieActors { get; set; } = null!;
+
 }
