@@ -13,6 +13,6 @@ public class Review
     // ForeignKey from Movie 1:M
     public int MovieId { get; set; }
 
-    // Navigation back to Movie 1:M relation
+    // Navigation property back to Movie 1:M relation
     public Movie Movie { get; set; } = null!;
 }

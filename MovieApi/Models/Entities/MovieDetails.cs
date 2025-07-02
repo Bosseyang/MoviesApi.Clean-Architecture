@@ -10,6 +10,6 @@ public class MovieDetails
     // ForeignKey for Movie 1:1 relation
     public int MovieId { get; set; }
 
-    // Navigation 1:1 relation to Movie
-    public Movie Movie { get; set; }
+    // Navigation property 1:1 relation to Movie
+    public Movie Movie { get; set; } = null!;
 }
