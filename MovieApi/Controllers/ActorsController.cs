@@ -24,22 +24,29 @@ namespace MovieApi.Controllers
             _context = context;
         }
 
-        // POST: /api/movies/{movieId}/actors/{actorId}
-        // TODO: (lägg till aktör till film med roll)
-        //// To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        //[HttpPost]
-        //public async Task<ActionResult<Actor>> PostActor(Actor actor)
-        //{
-        //    _context.Actors.Add(actor);
-        //    await _context.SaveChangesAsync();
-
-        //    return CreatedAtAction("GetMovie", new { id = actor.Id }, actor);
-        //}
-
-
-        private bool ActorExists(int id)
+        // POST /api/movies/{movieId}/actors/{actorId}
+        [HttpPost("/api/movies/{movieId}/actors/{actorId}")]
+        public async Task<IActionResult> AddActorToMovie(int movieId, int actorId)
         {
-            return _context.Actors.Any(e => e.Id == id);
+            var movie = await _context.Movies
+                .Include(m => m.Actors)
+                .FirstOrDefaultAsync(m => m.Id == movieId);
+
+            var actor = await _context.Actors.FindAsync(actorId);
+
+            if (movie == null)
+                return NotFound($"Movie with id {movieId} not found.");
+
+            if (actor == null)
+                return NotFound($"Actor with id {actorId} not found.");
+
+            if (movie.Actors.Any(a => a.Id == actorId))
+                return BadRequest("Actor already exist in this movie.");
+
+            movie.Actors.Add(actor);
+            await _context.SaveChangesAsync();
+
+            return Ok($"{actor.Name} with actorID: {actorId} added to movie: {movie.Title} with movieID: {movieId}");
         }
     }
 }
