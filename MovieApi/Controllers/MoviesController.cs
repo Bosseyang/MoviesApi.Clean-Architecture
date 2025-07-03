@@ -6,12 +6,15 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MovieApi.Data;
+using MovieApi.Models.DTOs;
 using MovieApi.Models.Entities;
 
 namespace MovieApi.Controllers
 {
     [Route("api/movies")]
     [ApiController]
+    //[Produces("application/json")]
+    //TODO: Add Swashbuckle.AspNetCore.Annotations 
     public class MoviesController : ControllerBase
     {
         private readonly MovieContext _context;
@@ -23,9 +26,22 @@ namespace MovieApi.Controllers
 
         // GET: api/Movies
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Movie>>> GetMovie()
+        public async Task<ActionResult<IEnumerable<MovieDto>>> GetMovies([FromQuery] bool withActors = false)
         {
-            return await _context.Movies.ToListAsync();
+            if (!withActors) { 
+
+            }
+            var movies = await _context.Movies
+                .Select(m => new MovieDto
+                {
+                    Id = m.Id,
+                    Title = m.Title,
+                    Year = m.Year,
+                    Genre = m.Genre,
+                    Duration = m.Duration
+                }).ToListAsync();
+
+            return Ok(movies);
         }
 
         // GET: api/Movies/5
