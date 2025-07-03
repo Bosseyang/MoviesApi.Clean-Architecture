@@ -13,8 +13,8 @@ public static class SeedDataExtension
         var context = serviceProvider.GetRequiredService<MovieContext>();
 
         //Auto update and migrate
-        await context.Database.EnsureDeletedAsync();
-        await context.Database.MigrateAsync();
+        //await context.Database.EnsureDeletedAsync();
+        //await context.Database.MigrateAsync();
 
         try
         {

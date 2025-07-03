@@ -2,6 +2,9 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using MovieApi.Data;
 using MovieApi.Extensions;
+
+
+
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<MovieContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("MovieContext") ?? throw new InvalidOperationException("Connection string 'MovieContext' not found.")));
@@ -22,7 +25,7 @@ if (app.Environment.IsDevelopment())
     {
         options.SwaggerEndpoint("/openapi/v1.json", "v1");
     });
-    app.SeedDataAsync();
+    await app.SeedDataAsync();
     
 }
     
