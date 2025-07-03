@@ -213,9 +213,7 @@ namespace MovieApi.Controllers
         {
             var movie = await _context.Movies.FindAsync(id);
             if (movie == null)
-            {
                 return NotFound();
-            }
 
             _context.Movies.Remove(movie);
             await _context.SaveChangesAsync();
