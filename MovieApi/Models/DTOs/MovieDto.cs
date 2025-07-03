@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace MovieApi.Models.DTOs;
 
@@ -11,5 +12,8 @@ public class MovieDto
     //TODO: Normalize later?
     public string Genre { get; set; } = null!;
     public int Duration { get; set; }
+    //For query string, if we use GET without query string, we don't want to show Actors=Null
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public List<ActorDto>? Actors { get; set; }
 
 }
