@@ -6,12 +6,19 @@ namespace MovieApi.Models.DTOs;
 public class MovieCreateDto
 {
     [Required]
-    public string Title { get; set; } = null!;
-    [Range(1900, 2025)]
+    public string Title { get; set; } = string.Empty;
     public int Year { get; set; }
     //TODO: Normalize later?
     [Required]
-    public string Genre { get; set; } = null!;
+    public string Genre { get; set; } = string.Empty;
     [Range(45, 300)]
     public int Duration { get; set; }
+    // MovieDetails
+    //public string Synopsis { get; set; } = string.Empty;
+    //public string Language { get; set; } = string.Empty;
+    //public int Budget { get; set; }
+
+    //Links to MovieDetailDto
+    [Required]
+    public MovieDetailCreateDto MovieDetails { get; set; } = new();
 }
