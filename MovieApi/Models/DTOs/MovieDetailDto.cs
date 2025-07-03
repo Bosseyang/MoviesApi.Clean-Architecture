@@ -10,6 +10,7 @@ public class MovieDetailDto
     public int Year { get; set; }
     public string Genre { get; set; } = string.Empty;
     public int Duration { get; set; }
+    //public MovieDto MovieData { get; set; } = new MovieDto();
 
     //MovieDetails
     [Required]
