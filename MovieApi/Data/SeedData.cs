@@ -46,7 +46,7 @@ public class SeedData
             var year = rand.Next(1900, 2025);
             var genre = genreList[rand.Next(0, genreList.Count)];
             //Duration in minutes
-            var duration = rand.Next(45, 240);
+            var duration = rand.Next(45, 300);
             var budget = rand.Next(50000, 500000000);
 
             int numActors = faker.Random.Int(3, actors.Count);
@@ -70,7 +70,7 @@ public class SeedData
 
                 //TODO: Add reviews 1:M and fix N:M between movie and actor
                 Actors = movieActors,
-                Reviews = GenerateReviews(rand.Next(2, 10)),
+                Reviews = GenerateReviews(rand.Next(1, 10)),
 
             };
             movies.Add(movie);
@@ -101,8 +101,8 @@ public class SeedData
         for (int i = 0; i < numberOfReviews; i++)
         {
             var reviewerName = CultureInfo.CurrentCulture.TextInfo.ToTitleCase(faker.Name.FullName());
-            var comment = faker.Rant.Random.ToString();
-            var rating = rand.Next(1, 5);
+            var comment = faker.Rant.Review("Movie"); //.Random.String(faker.Random.Int(1,25));
+            var rating = rand.Next(1, 6);
             var review = new Review { ReviewerName = reviewerName, Comment = comment!, Rating = rating};
             reviews.Add(review);
         }
