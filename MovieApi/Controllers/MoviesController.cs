@@ -123,38 +123,14 @@ namespace MovieApi.Controllers
         [HttpPost]
         public async Task<ActionResult<MovieDto>> CreateMovie(MovieCreateDto dto)
         {
-            var movie = new Movie
-            {
-                Title = dto.Title,
-                Year = dto.Year,
-                Genre = dto.Genre,
-                Duration = dto.Duration,
-                MovieDetails = new MovieDetails
-                {
-                    Synopsis = dto.MovieDetails.Synopsis,
-                    Language = dto.MovieDetails.Language,
-                    Budget = dto.MovieDetails.Budget,
-                }
-            };
+            var movie = _mapper.Map<Movie>(dto);
+
             _context.Movies.Add(movie);
             await _context.SaveChangesAsync();
 
-            var result = new MovieDetailDto
-            {
-                Id = movie.Id,
-                Title = movie.Title,
-                Year = movie.Year,
-                Genre = movie.Genre,
-                Duration = movie.Duration,
-                Synopsis = dto.MovieDetails.Synopsis,
-                Language = dto.MovieDetails.Language,
-                Budget = dto.MovieDetails.Budget,
-                //Empty Review and Actor list for newly added Movie
-                Reviews = new List<ReviewDto>(),
-                Actors = new List<ActorDto>()
-            };
+            var movieDto = _mapper.Map<MovieDto>(movie);
 
-            return CreatedAtAction("GetMovie", new { id = movie.Id }, result);
+            return CreatedAtAction(nameof(GetMovie), new { id = movieDto.Id }, movieDto);
         }
 
         // DELETE: api/Movies/5
