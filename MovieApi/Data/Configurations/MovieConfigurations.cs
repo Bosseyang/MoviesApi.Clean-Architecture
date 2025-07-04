@@ -15,6 +15,9 @@ public class MovieConfigurations : IEntityTypeConfiguration<Movie>
             .HasMaxLength(255);
         //... Add more
 
+        //Shadow property
+        builder.Property<DateTime>("Edited");
+
         builder.ToTable("Movies");
     }
 }
