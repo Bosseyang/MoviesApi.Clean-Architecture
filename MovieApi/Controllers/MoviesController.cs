@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
+﻿using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MovieApi.Data;
@@ -18,107 +15,73 @@ namespace MovieApi.Controllers
     public class MoviesController : ControllerBase
     {
         private readonly MovieContext _context;
+        private readonly IMapper _mapper;
 
-        public MoviesController(MovieContext context)
+        public MoviesController(MovieContext context, IMapper mapper)
         {
             _context = context;
+            _mapper = mapper;
         }
 
         // GET: api/Movies
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<MovieDto>>> GetMovies([FromQuery] bool withActors = false)
+        public async Task<ActionResult<IEnumerable<MovieDto>>> GetMovies([FromQuery] bool withactors = false)
         {
-            var movies = await _context.Movies
-                .Select(m => new MovieDto
-                {
-                    Id = m.Id,
-                    Title = m.Title,
-                    Year = m.Year,
-                    Genre = m.Genre,
-                    Duration = m.Duration
-                }).ToListAsync();
 
-            return Ok(movies);
+            var query = _context.Movies.AsQueryable();
+
+            if (withactors)
+                query = query.Include(m => m.Actors);
+
+            var dtoList = await query
+                .ProjectTo<MovieDto>(_mapper.ConfigurationProvider)
+                .ToListAsync();
+
+            if (!dtoList.Any())
+                return NotFound();
+
+            if (!withactors)
+                foreach (var dto in dtoList)
+                {
+                    dto.Actors = null!;
+                }
+
+            return Ok(dtoList);
         }
 
         // GET: api/Movies/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<MovieDto>> GetMovie(int id, [FromQuery] bool withActors = false)
+        public async Task<ActionResult<MovieDto>> GetMovie(int id, [FromQuery] bool withactors = false)
         {
-            var query = _context.Movies.AsQueryable();
+            var query = _context.Movies
+                .AsQueryable()
+                .Where(m => m.Id == id);
 
-            if (withActors)
+            if (withactors)
                 query = query.Include(m => m.Actors);
 
-            var movie = await query.FirstOrDefaultAsync(m => m.Id == id);
+            var dto = await query
+                .ProjectTo<MovieDto>(_mapper.ConfigurationProvider)
+                .FirstOrDefaultAsync();
 
-            if (movie == null)
+            if (dto == null)
                 return NotFound();
 
-            var dto = new MovieDto
-            {
-                Id = movie.Id,
-                Title = movie.Title,
-                Year = movie.Year,
-                Genre = movie.Genre,
-                Duration = movie.Duration
-            };
-
-            if (withActors)
-            {
-                dto.Actors = movie.Actors.Select(a => new ActorDto
-                {
-                    Id = a.Id,
-                    Name = a.Name,
-                    BirthYear = a.BirthYear
-                }).ToList();
-            }
-
+            if (!withactors)
+                dto.Actors = null!;
             return Ok(dto);
         }
 
         // GET: api/Movies/{id}/details
         [HttpGet("{id}/details")]
-        public async Task<ActionResult<IEnumerable<MovieDetailDto>>> GetMovieDetail(int id)
+        public async Task<ActionResult<MovieDetailDto>> GetMovieDetail(int id)
         {
-            var movie = await _context.Movies
-                .Include(m => m.MovieDetails)
-                .Include(m => m.Actors)
-                .Include(m => m.Reviews)
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (movie == null)
+            var dto = await _mapper
+                .ProjectTo<MovieDetailDto>(_context.Movies.Where(m => m.Id == id))
+                .FirstOrDefaultAsync();
+
+            if (dto == null)
                 return NotFound();
-
-            var dto = new MovieDetailDto
-            {
-                Id = movie.Id,
-                Title = movie.Title,
-                Year = movie.Year,
-                Genre = movie.Genre,
-                Duration = movie.Duration,
-                //From MovieDetails
-                Synopsis = movie.MovieDetails.Synopsis,
-                Language = movie.MovieDetails.Language,
-                Budget = movie.MovieDetails.Budget,
-                //From Actors
-                Actors = movie.Actors.Select(a => new ActorDto
-                {
-                    Id = a.Id,
-                    Name = a.Name,
-                    BirthYear = a.BirthYear,
-                }).ToList(),
-                //From Reviews
-                Reviews = movie.Reviews.Select(r => new ReviewDto
-                {
-                    Id = r.Id,
-                    ReviewerName = r.ReviewerName,
-                    Comment = r.Comment,
-                    Rating = r.Rating,
-
-                }).ToList()
-
-
-            };
 
             return Ok(dto);
         }
@@ -132,22 +95,9 @@ namespace MovieApi.Controllers
                 .Include(m => m.MovieDetails)
                 .FirstOrDefaultAsync(m => m.Id == id);
 
-            if (movie == null)
-                return NotFound();
-            if (id != movie.Id)
-                return BadRequest();
+            if (movie == null) return NotFound();
 
-            movie.Title = dto.Title;
-            movie.Year = dto.Year;
-            movie.Genre = dto.Genre;
-            movie.Duration = dto.Duration;
-
-            if (movie.MovieDetails == null)
-                movie.MovieDetails = new MovieDetails();
-
-            movie.MovieDetails.Synopsis = dto.Synopsis;
-            movie.MovieDetails.Language = dto.Language;
-            movie.MovieDetails.Budget = dto.Budget;
+            _mapper.Map(dto, movie);
 
             try
             {
