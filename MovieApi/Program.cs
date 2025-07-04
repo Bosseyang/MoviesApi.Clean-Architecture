@@ -19,14 +19,16 @@ builder.Services.AddControllers();
 //    opt.EnableAnnotations();
 //});
 
-//builder.Services.AddAutoMapper(cfg =>
-//{
-//    cfg.AddProfile<MapperProfile>();
-//});
+builder.Services.AddAutoMapper(cfg =>
+{
+    cfg.AddProfile<MapperProfile>();
+});
 
 builder.Services.AddOpenApi();
 
 var app = builder.Build();
+
+
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
