@@ -26,12 +26,12 @@ public class ReviewsController : ControllerBase
     [HttpGet("{movieId}/reviews")]
     public async Task<ActionResult<IEnumerable<ReviewDto>>> GetReviews(int movieId)
     {
+        var movieExists = await _context.Movies.AnyAsync(m => m.Id == movieId);
+        if (!movieExists) return NotFound($"Movie with Id: {movieId} does not exist");
+
         var dto = await _mapper
             .ProjectTo<ReviewDto>(_context.Reviews.Where(r => r.MovieId == movieId))
             .ToListAsync();
-
-        if (dto == null)
-            return NotFound();
 
         return Ok(dto);
     }
