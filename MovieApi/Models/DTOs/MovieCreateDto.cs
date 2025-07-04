@@ -8,7 +8,7 @@ public class MovieCreateDto
 {
     [Required]
     public string Title { get; set; } = string.Empty;
-    [MaxNumber(2025)]
+    [Range(1900, 2025)]
     public int Year { get; set; }
     //TODO: Normalize later?
     [Required]
@@ -21,6 +21,6 @@ public class MovieCreateDto
     //public int Budget { get; set; }
 
     //Links to MovieDetailDto
-    [Required]
+    //[Required]
     public MovieDetailCreateDto MovieDetails { get; set; } = new();
 }

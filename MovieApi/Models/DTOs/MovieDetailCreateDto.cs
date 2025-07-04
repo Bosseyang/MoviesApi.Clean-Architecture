@@ -4,10 +4,10 @@ namespace MovieApi.Models.DTOs;
 
 public class MovieDetailCreateDto
 {
-    [Required]
+    //[Required]
     public string Synopsis { get; set; } = string.Empty;
 
-    [Required]
+    //[Required]
     public string Language { get; set; } = string.Empty;
 
     [Range(0, int.MaxValue)]

@@ -30,21 +30,21 @@ namespace MovieApi.Controllers
 
             var query = _context.Movies.AsQueryable();
 
-            if (withactors)
-                query = query.Include(m => m.Actors);
+            if (withactors) query = query.Include(m => m.Actors);
 
             var dtoList = await query
                 .ProjectTo<MovieDto>(_mapper.ConfigurationProvider)
                 .ToListAsync();
 
-            if (!dtoList.Any())
-                return NotFound();
+            if (!dtoList.Any()) return NotFound();
 
             if (!withactors)
+            {
                 foreach (var dto in dtoList)
                 {
                     dto.Actors = null!;
                 }
+            }
 
             return Ok(dtoList);
         }
@@ -57,18 +57,16 @@ namespace MovieApi.Controllers
                 .AsQueryable()
                 .Where(m => m.Id == id);
 
-            if (withactors)
-                query = query.Include(m => m.Actors);
+            if (withactors) query = query.Include(m => m.Actors);
 
             var dto = await query
                 .ProjectTo<MovieDto>(_mapper.ConfigurationProvider)
                 .FirstOrDefaultAsync();
 
-            if (dto == null)
-                return NotFound();
+            if (dto == null) return NotFound();
 
-            if (!withactors)
-                dto.Actors = null!;
+            if (!withactors) dto.Actors = null!;
+
             return Ok(dto);
         }
 
@@ -80,8 +78,7 @@ namespace MovieApi.Controllers
                 .ProjectTo<MovieDetailDto>(_context.Movies.Where(m => m.Id == id))
                 .FirstOrDefaultAsync();
 
-            if (dto == null)
-                return NotFound();
+            if (dto == null) return NotFound();
 
             return Ok(dto);
         }
@@ -138,8 +135,7 @@ namespace MovieApi.Controllers
         public async Task<IActionResult> DeleteMovie(int id)
         {
             var movie = await _context.Movies.FindAsync(id);
-            if (movie == null)
-                return NotFound();
+            if (movie == null) return NotFound();
 
             _context.Movies.Remove(movie);
             await _context.SaveChangesAsync();
