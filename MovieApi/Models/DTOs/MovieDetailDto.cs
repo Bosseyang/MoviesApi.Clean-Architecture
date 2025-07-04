@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace MovieApi.Models.DTOs;
 
@@ -21,6 +22,7 @@ public class MovieDetailDto
     public int Budget { get; set; }
 
     public List<ReviewDto> Reviews { get; set; } = new List<ReviewDto>();
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
     public List<ActorDto> Actors { get; set; } = new List<ActorDto>();
 }
 

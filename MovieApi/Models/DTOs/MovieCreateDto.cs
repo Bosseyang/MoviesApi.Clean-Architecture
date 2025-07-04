@@ -1,4 +1,5 @@
 ﻿using MovieApi.Models.Entities;
+using MovieApi.Validations;
 using System.ComponentModel.DataAnnotations;
 
 namespace MovieApi.Models.DTOs;
@@ -7,6 +8,7 @@ public class MovieCreateDto
 {
     [Required]
     public string Title { get; set; } = string.Empty;
+    [MaxNumber(2025)]
     public int Year { get; set; }
     //TODO: Normalize later?
     [Required]
