@@ -4,13 +4,13 @@ using MovieApi.Models.Entities;
 
 namespace MovieApi.Data.Configurations;
 
-public class MovieConfigurations : IEntityTypeConfiguration<Movie>
+public class MovieConfiguration : IEntityTypeConfiguration<Movie>
 {
     public void Configure(EntityTypeBuilder<Movie> builder)
     {
-        builder.HasKey(s => s.Id);
+        builder.HasKey(m => m.Id);
 
-        builder.Property(s => s.Title)
+        builder.Property(m => m.Title)
             .HasColumnName("Title")
             .HasMaxLength(255);
         //... Add more

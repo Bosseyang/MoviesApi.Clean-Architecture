@@ -4,7 +4,7 @@ using MovieApi.Models.Entities;
 
 namespace MovieApi.Data.Configurations;
 
-public class MovieDetailsConfigurations : IEntityTypeConfiguration<MovieDetails>
+public class MovieDetailsConfiguration : IEntityTypeConfiguration<MovieDetails>
 {
     public void Configure(EntityTypeBuilder<MovieDetails> builder)
     {
