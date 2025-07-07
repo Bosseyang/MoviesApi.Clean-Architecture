@@ -22,11 +22,11 @@ namespace MovieApi.Data
         //public DbSet<MovieActor> MovieActors { get; set; }
 
         //TODO: Add configurations with fluent api here
-        //protected override void OnModelCreating(ModelBuilder modelBuilder)
-        //{
-            //modelBuilder.ApplyConfiguration(new MovieConfigurations());
-            //modelBuilder.ApplyConfiguration(new MovieDetailsConfigurations());
-        //}
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+           //modelBuilder.ApplyConfiguration(new MovieConfigurations());
+           //modelBuilder.ApplyConfiguration(new MovieDetailsConfigurations());
+        }
 
         //public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
         //{
