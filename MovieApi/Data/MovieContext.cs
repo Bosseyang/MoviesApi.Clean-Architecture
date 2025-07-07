@@ -24,8 +24,9 @@ namespace MovieApi.Data
         //TODO: Add configurations with fluent api here
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-           //modelBuilder.ApplyConfiguration(new MovieConfigurations());
-           //modelBuilder.ApplyConfiguration(new MovieDetailsConfigurations());
+            //modelBuilder.ApplyConfiguration(new MovieConfiguration());
+            //modelBuilder.ApplyConfiguration(new MovieDetailsConfiguration());
+            modelBuilder.ApplyConfiguration(new MovieActorConfiguration());
         }
 
         //public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
