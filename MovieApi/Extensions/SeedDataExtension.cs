@@ -6,15 +6,18 @@ namespace MovieApi.Extensions;
 
 public static class SeedDataExtension
 {
-    public static async Task SeedDataAsync(this IApplicationBuilder app)
+    public static async Task SeedDataAsync(this IApplicationBuilder app, bool update = false)
     {
         using var scope = app.ApplicationServices.CreateScope();
         var serviceProvider = scope.ServiceProvider;
         var context = serviceProvider.GetRequiredService<MovieContext>();
 
-        //Auto update and migrate
-        //await context.Database.EnsureDeletedAsync();
-        //await context.Database.MigrateAsync();
+        if (update)
+        {
+            //Auto update and migrate
+            await context.Database.EnsureDeletedAsync();
+            await context.Database.MigrateAsync();
+        }
 
         try
         {
