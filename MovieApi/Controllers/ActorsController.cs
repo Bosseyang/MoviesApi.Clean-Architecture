@@ -13,7 +13,7 @@ using MovieApi.Models.Entities;
 namespace MovieApi.Controllers
 {
     [ApiController]
-    [Route("api/actors")]
+    [Route("api/movies")]
     //[Produces("application/json")]
     //TODO: Add Swashbuckle.AspNetCore.Annotations 
     public class ActorsController : ControllerBase
