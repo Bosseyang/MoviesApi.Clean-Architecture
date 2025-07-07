@@ -83,6 +83,25 @@ namespace MovieApi.Migrations
                     b.ToTable("Movies");
                 });
 
+            modelBuilder.Entity("MovieApi.Models.Entities.MovieActor", b =>
+                {
+                    b.Property<int>("MovieId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ActorId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Role")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("MovieId", "ActorId");
+
+                    b.HasIndex("ActorId");
+
+                    b.ToTable("MovieActor", (string)null);
+                });
+
             modelBuilder.Entity("MovieApi.Models.Entities.MovieDetails", b =>
                 {
                     b.Property<int>("Id")
@@ -157,6 +176,25 @@ namespace MovieApi.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("MovieApi.Models.Entities.MovieActor", b =>
+                {
+                    b.HasOne("MovieApi.Models.Entities.Actor", "Actor")
+                        .WithMany("MovieActors")
+                        .HasForeignKey("ActorId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("MovieApi.Models.Entities.Movie", "Movie")
+                        .WithMany("MovieActors")
+                        .HasForeignKey("MovieId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Actor");
+
+                    b.Navigation("Movie");
+                });
+
             modelBuilder.Entity("MovieApi.Models.Entities.MovieDetails", b =>
                 {
                     b.HasOne("MovieApi.Models.Entities.Movie", "Movie")
@@ -179,8 +217,15 @@ namespace MovieApi.Migrations
                     b.Navigation("Movie");
                 });
 
+            modelBuilder.Entity("MovieApi.Models.Entities.Actor", b =>
+                {
+                    b.Navigation("MovieActors");
+                });
+
             modelBuilder.Entity("MovieApi.Models.Entities.Movie", b =>
                 {
+                    b.Navigation("MovieActors");
+
                     b.Navigation("MovieDetails")
                         .IsRequired();
 
