@@ -33,12 +33,13 @@ public class MapperProfile : Profile
         //CreateMap<MovieDetails, MovieDetailDto>();
 
         // Actor
-        CreateMap<Actor, ActorDto>();
-        CreateMap<ActorDto, Actor>();
+        CreateMap<Actor, ActorDto>().ReverseMap();
 
         // Review
-        CreateMap<Review, ReviewDto>();
-        CreateMap<ReviewDto, Review>();
+        CreateMap<Review, ReviewDto>().ReverseMap();
         //CreateMap<Movie, ReviewDto>();
+
+        //MovieActor
+        CreateMap<MovieActorCreateDto, MovieActor>();
     }
 }

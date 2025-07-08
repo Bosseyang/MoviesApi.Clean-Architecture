@@ -19,7 +19,7 @@ namespace MovieApi.Data
         public DbSet<MovieDetails> MovieDetails { get; set; }
         public DbSet<Review> Reviews { get; set; }
         public DbSet<Actor> Actors { get; set; }
-        //public DbSet<MovieActor> MovieActors { get; set; }
+        public DbSet<MovieActor> MovieActors { get; set; }
 
         //TODO: Add configurations with fluent api here
         protected override void OnModelCreating(ModelBuilder modelBuilder)
