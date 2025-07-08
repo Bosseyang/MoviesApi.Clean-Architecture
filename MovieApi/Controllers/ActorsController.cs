@@ -9,6 +9,7 @@ using Microsoft.EntityFrameworkCore;
 using MovieApi.Data;
 using MovieApi.Models.DTOs;
 using MovieApi.Models.Entities;
+using MovieApi.Controllers;
 
 namespace MovieApi.Controllers
 {
@@ -52,6 +53,33 @@ namespace MovieApi.Controllers
                                     controllerName: "Movies", 
                                     new { id = movieDto.Id }, movieDto);
         }
+
+        // POST /api/movies/{movieId}/actors
+        [HttpPost("{movieId}/actors")]
+        public async Task<ActionResult<MovieDto>> AddActorToMovieWithRole(int movieId, MovieActorCreateDto dto)
+        {
+            if (!MovieExists(movieId)) return NotFound($"Movie with Id: {movieId} not found");
+
+            var actor = await _context.Actors.FindAsync(dto.ActorId);
+            if (actor == null) return NotFound($"Actor with Id: {dto.ActorId} not found");
+
+            var actorExists = await _context.MovieActors.AnyAsync(ma => ma.MovieId == movieId && ma.ActorId == dto.ActorId);
+            if (actorExists) return BadRequest("Actor is already added to this movie");
+
+            var movieActor = _mapper.Map<MovieActor>(dto);
+            movieActor.MovieId = movieId;
+
+            _context.MovieActors.Add(movieActor);
+            await _context.SaveChangesAsync();
+
+            return NoContent();
+        }
+
+        private bool MovieExists(int id)
+        {
+            return _context.Movies.Any(e => e.Id == id);
+        }
+
     }
 }
 
