@@ -11,8 +11,8 @@ public class MovieActorConfiguration : IEntityTypeConfiguration<MovieActor>
     {
         builder.HasKey(m => new { m.MovieId, m.ActorId});
 
-        builder.Property(m => m.Role)
-            .IsRequired();
+        builder.Property(m => m.Role);
+            //.IsRequired();
 
         builder.HasOne(m => m.Movie)
             .WithMany(a => a.MovieActors)
