@@ -12,7 +12,8 @@ public class MovieConfiguration : IEntityTypeConfiguration<Movie>
 
         builder.Property(m => m.Title)
             .HasColumnName("Title")
-            .HasMaxLength(255);
+            .HasMaxLength(255)
+            .IsRequired();
         //... Add more
 
         //Shadow property

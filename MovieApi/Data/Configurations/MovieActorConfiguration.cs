@@ -9,18 +9,19 @@ public class MovieActorConfiguration : IEntityTypeConfiguration<MovieActor>
 {
     public void Configure(EntityTypeBuilder<MovieActor> builder)
     {
-        builder.HasKey(m => new { m.MovieId, m.ActorId});
+        builder.HasKey(ma => new { ma.MovieId, ma.ActorId});
 
-        builder.Property(m => m.Role);
-            //.IsRequired();
+        builder.Property(m => m.Role)
+            .IsRequired()
+            .HasMaxLength(128);
 
-        builder.HasOne(m => m.Movie)
-            .WithMany(a => a.MovieActors)
-            .HasForeignKey(m => m.MovieId);
-
-        builder.HasOne(a => a.Actor)
+        builder.HasOne(ma => ma.Movie)
             .WithMany(m => m.MovieActors)
-            .HasForeignKey(a => a.ActorId);
+            .HasForeignKey(ma => ma.MovieId);
+
+        builder.HasOne(ma => ma.Actor)
+            .WithMany(m => m.MovieActors)
+            .HasForeignKey(ma => ma.ActorId);
 
         builder.ToTable("MovieActor");
     }
