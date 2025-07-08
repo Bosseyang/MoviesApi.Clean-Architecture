@@ -12,5 +12,5 @@ public class Actor
     // Navigation property N:M throught ActorMovie Connection Table
     public ICollection<Movie> Movies { get; set; } = new List<Movie>();
 
-    public ICollection<MovieActor> MovieActors { get; set; } = [];
+    public ICollection<MovieActor> MovieActors { get; set; } = new List<MovieActor>();
 }
