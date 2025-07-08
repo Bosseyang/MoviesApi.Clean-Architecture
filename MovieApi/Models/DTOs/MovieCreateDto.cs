@@ -6,21 +6,18 @@ namespace MovieApi.Models.DTOs;
 //POST
 public class MovieCreateDto
 {
-    [Required]
+    [Required(ErrorMessage = "Title is a required field.")]
     public string Title { get; set; } = string.Empty;
     [Range(1900, 2025)]
     public int Year { get; set; }
     //TODO: Normalize later?
     [Required]
+    [MaxLength(255, ErrorMessage = "Max length is 255.")]
     public string Genre { get; set; } = string.Empty;
     [Range(45, 300)]
     public int Duration { get; set; }
-    // MovieDetails
-    //public string Synopsis { get; set; } = string.Empty;
-    //public string Language { get; set; } = string.Empty;
-    //public int Budget { get; set; }
 
-    //Links to MovieDetailDto
+    //Navigation prop
     //[Required]
     public MovieDetailCreateDto MovieDetails { get; set; } = new();
 }
