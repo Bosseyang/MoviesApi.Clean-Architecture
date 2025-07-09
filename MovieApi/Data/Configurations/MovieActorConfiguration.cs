@@ -9,6 +9,7 @@ public class MovieActorConfiguration : IEntityTypeConfiguration<MovieActor>
 {
     public void Configure(EntityTypeBuilder<MovieActor> builder)
     {
+        //Composite key
         builder.HasKey(ma => new { ma.MovieId, ma.ActorId});
 
         builder.Property(m => m.Role)

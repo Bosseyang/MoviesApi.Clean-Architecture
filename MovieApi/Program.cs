@@ -1,9 +1,6 @@
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
 using MovieApi.Data;
 using MovieApi.Extensions;
-
-
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<MovieContext>(options =>
@@ -11,7 +8,7 @@ builder.Services.AddDbContext<MovieContext>(options =>
 
 // Add services to the container.
 
-builder.Services.AddControllers();
+builder.Services.AddControllers(opt => opt.ReturnHttpNotAcceptable = true);
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 
 // builder.Services.AddSwaggerGen(opt =>
@@ -38,10 +35,11 @@ if (app.Environment.IsDevelopment())
     //{
     //    options.SwaggerEndpoint("/openapi/v1.json", "v1");
     //});
-    await app.SeedDataAsync(update: false);
-    
+    //Set to True to SeedData
+    await app.SeedDataAsync(update: true);
+
 }
-    
+
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
