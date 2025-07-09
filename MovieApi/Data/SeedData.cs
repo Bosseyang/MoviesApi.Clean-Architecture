@@ -12,14 +12,10 @@ public class SeedData
     private static Faker faker = new Faker("sv");
     internal static async Task InitAsync(MovieContext context)
     {
-        //If there's data already, return
         if (await context.Movies.AnyAsync()) return;
 
         var actors = GenerateActors(50);
         await context.AddRangeAsync(actors);
-
-        //var reviews = GenerateReviews(50);
-        //await context.AddRangeAsync(reviews);
 
         var movies = GenerateMovies(50, actors);
         await context.AddRangeAsync(movies);
@@ -51,9 +47,6 @@ public class SeedData
 
             int numActors = faker.Random.Int(3, actors.Count);
             var movieActors = faker.PickRandom(actors, numActors).ToList();
-
-            //int numReviews = faker.Random.Int(2, reviews.Count);
-            //var movieReviews = faker.PickRandom(reviews, numReviews).ToList();
 
             var movie = new Movie
             {
