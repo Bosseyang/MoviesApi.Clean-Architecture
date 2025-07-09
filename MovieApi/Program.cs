@@ -35,8 +35,8 @@ if (app.Environment.IsDevelopment())
     //{
     //    options.SwaggerEndpoint("/openapi/v1.json", "v1");
     //});
-    //Set to True to SeedData
-    await app.SeedDataAsync(update: true);
+    //Set to true to update and Seed Data, false to skip
+    await app.SeedDataAsync(update: false);
 
 }
 
