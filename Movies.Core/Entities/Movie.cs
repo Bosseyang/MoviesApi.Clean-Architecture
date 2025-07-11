@@ -1,4 +1,4 @@
-﻿namespace MovieApi.Models.Entities;
+﻿namespace Movies.Core.Entities;
 
 public class Movie
 {
@@ -14,11 +14,11 @@ public class Movie
     public MovieDetails MovieDetails { get; set; } = null!;
 
     // 1:M Relation with Review, Each Movie has Many Reviews
-    public ICollection<Review> Reviews { get; set; } = new List<Review>();  
+    public ICollection<Review> Reviews { get; set; } = new List<Review>();
 
     // M:N Relation with Actor through join table MovieAction, Each Movie can have several Actors and Each Actor can be in Several Movies
     public ICollection<Actor> Actors { get; set; } = new List<Actor>();
     // Manually setting up MovieActor table
-    public ICollection<MovieActor> MovieActors { get;set; } = new List<MovieActor>();
+    public ICollection<MovieActor> MovieActors { get; set; } = new List<MovieActor>();
 
 }

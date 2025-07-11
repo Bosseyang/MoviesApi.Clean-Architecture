@@ -1,9 +1,9 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using MovieApi.Data;
-using MovieApi.Models.DTOs;
-using MovieApi.Models.Entities;
+using Movies.Core.DTOs;
+using Movies.Core.Entities;
+using Movies.Data;
 
 namespace MovieApi.Controllers
 {

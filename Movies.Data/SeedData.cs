@@ -1,16 +1,13 @@
-﻿
-using Bogus;
-using Bogus.DataSets;
-using Microsoft.CodeAnalysis.Elfie.Diagnostics;
+﻿using Bogus;
 using Microsoft.EntityFrameworkCore;
-using MovieApi.Models.Entities;
+using Movies.Core.Entities;
 using System.Globalization;
 
-namespace MovieApi.Data;
+namespace Movies.Data;
 public class SeedData
 {
     private static Faker faker = new Faker("sv");
-    internal static async Task InitAsync(MovieContext context)
+    public static async Task InitAsync(MovieContext context)
     {
         if (await context.Movies.AnyAsync()) return;
 
@@ -27,11 +24,11 @@ public class SeedData
     {
         var movies = new List<Movie>();
         Random rand = new Random();
-        var genreList = new List<string> { "Action", "Romance", "Drama", "Thriller", "Horror", 
+        var genreList = new List<string> { "Action", "Romance", "Drama", "Thriller", "Horror",
             "Comedy", "Western", "Fantasy", "Science Fiction", "Documentary" +
             "Musical", "Crime", "Animation", "Sport", "Historical"};
         var languageList = new List<string> { "Swedish", "English", "Spanish", "French", "German", "Italian" };
-        var roleList = new List<string> { "Main Antagonist", "Main Protagonist", "Lead", "Supporting", "Background", "Extra", "Bit"};
+        var roleList = new List<string> { "Main Antagonist", "Main Protagonist", "Lead", "Supporting", "Background", "Extra", "Bit" };
 
         for (int i = 0; i < numberOfMovies; i++)
         {
@@ -46,9 +43,9 @@ public class SeedData
             var duration = rand.Next(45, 300);
             var budget = rand.Next(50000, 500000000);
 
-            int numActors = faker.Random.Int(3, actors.Count/2);
+            int numActors = faker.Random.Int(3, actors.Count / 2);
             var selectActors = faker.PickRandom(actors, numActors).ToList();
-            
+
             var movieActors = faker.PickRandom(actors, numActors).ToList();
 
             var movie = new Movie
@@ -103,7 +100,7 @@ public class SeedData
             var reviewerName = CultureInfo.CurrentCulture.TextInfo.ToTitleCase(faker.Name.FullName());
             var comment = faker.Rant.Review("Movie"); //.Random.String(faker.Random.Int(1,25));
             var rating = rand.Next(1, 6);
-            var review = new Review { ReviewerName = reviewerName, Comment = comment!, Rating = rating};
+            var review = new Review { ReviewerName = reviewerName, Comment = comment!, Rating = rating };
             reviews.Add(review);
         }
 

@@ -1,8 +1,6 @@
-﻿using MovieApi.Models.Entities;
-using MovieApi.Validations;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
-namespace MovieApi.Models.DTOs;
+namespace Movies.Core.DTOs;
 //POST
 public class MovieCreateDto
 {

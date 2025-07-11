@@ -1,16 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
-using MovieApi.Data.Configurations;
-using MovieApi.Models.Entities;
+﻿using Microsoft.EntityFrameworkCore;
+using Movies.Core.Entities;
+using Movies.Data.Configurations;
 
-namespace MovieApi.Data
+namespace Movies.Data
 {
     public class MovieContext : DbContext
     {
-        public MovieContext (DbContextOptions<MovieContext> options)
+        public MovieContext(DbContextOptions<MovieContext> options)
             : base(options)
         {
         }

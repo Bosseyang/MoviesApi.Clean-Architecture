@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace MovieApi.Models.DTOs;
+﻿namespace Movies.Core.DTOs;
 
 public class ReviewDto
 {

@@ -1,7 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.Text.Json.Serialization;
+﻿using System.Text.Json.Serialization;
 
-namespace MovieApi.Models.DTOs;
+namespace Movies.Core.DTOs;
 
 public class MovieDetailDto
 {

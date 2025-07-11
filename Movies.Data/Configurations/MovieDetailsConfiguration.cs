@@ -1,14 +1,14 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using MovieApi.Models.Entities;
+using Movies.Core.Entities;
 
-namespace MovieApi.Data.Configurations;
+namespace Movies.Data.Configurations;
 
 public class MovieDetailsConfiguration : IEntityTypeConfiguration<MovieDetails>
 {
     public void Configure(EntityTypeBuilder<MovieDetails> builder)
     {
 
-        builder.ToTable("MovieDetails");
+        //builder.ToTable("MovieDetails");
     }
 }

@@ -1,8 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using MovieApi.Models.Entities;
+using Movies.Core.Entities;
 
-namespace MovieApi.Data.Configurations;
+namespace Movies.Data.Configurations;
 
 public class MovieConfiguration : IEntityTypeConfiguration<Movie>
 {
@@ -11,7 +11,7 @@ public class MovieConfiguration : IEntityTypeConfiguration<Movie>
         builder.HasKey(m => m.Id);
 
         builder.Property(m => m.Title)
-            .HasColumnName("Title")
+            //.HasColumnName("Title")
             .HasMaxLength(255)
             .IsRequired();
         //... Add more
@@ -19,6 +19,6 @@ public class MovieConfiguration : IEntityTypeConfiguration<Movie>
         //Shadow property
         builder.Property<DateTime>("Edited");
 
-        builder.ToTable("Movies");
+        //builder.ToTable("Movies");
     }
 }

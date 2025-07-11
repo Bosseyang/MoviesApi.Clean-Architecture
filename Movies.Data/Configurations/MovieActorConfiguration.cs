@@ -1,16 +1,15 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using Microsoft.EntityFrameworkCore.Migrations.Internal;
-using MovieApi.Models.Entities;
+using Movies.Core.Entities;
 
-namespace MovieApi.Data.Configurations;
+namespace Movies.Data.Configurations;
 
 public class MovieActorConfiguration : IEntityTypeConfiguration<MovieActor>
 {
     public void Configure(EntityTypeBuilder<MovieActor> builder)
     {
         //Composite key
-        builder.HasKey(ma => new { ma.MovieId, ma.ActorId});
+        builder.HasKey(ma => new { ma.MovieId, ma.ActorId });
 
         builder.Property(m => m.Role)
             .IsRequired()
@@ -24,6 +23,6 @@ public class MovieActorConfiguration : IEntityTypeConfiguration<MovieActor>
             .WithMany(m => m.MovieActors)
             .HasForeignKey(ma => ma.ActorId);
 
-        builder.ToTable("MovieActor");
+        //builder.ToTable("MovieActor");
     }
 }

@@ -1,8 +1,8 @@
 ﻿using AutoMapper;
-using MovieApi.Models.DTOs;
-using MovieApi.Models.Entities;
+using Movies.Core.DTOs;
+using Movies.Core.Entities;
 
-namespace MovieApi.Data;
+namespace Movies.Data;
 
 public class MapperProfile : Profile
 {
@@ -10,8 +10,8 @@ public class MapperProfile : Profile
     {
         //Movie
         CreateMap<Movie, MovieDto>();
-            //Dont show Actors[] as empty if we choose to not show actors
-            //.ForMember(dest => dest.Actors, opt => opt.Condition(src => src.Actors.Any()));
+        //Dont show Actors[] as empty if we choose to not show actors
+        //.ForMember(dest => dest.Actors, opt => opt.Condition(src => src.Actors.Any()));
         CreateMap<Movie, MovieDetailDto>()
             .ForMember(dest => dest.Synopsis, opt => opt.MapFrom(src => src.MovieDetails.Synopsis))
             .ForMember(dest => dest.Language, opt => opt.MapFrom(src => src.MovieDetails.Language))

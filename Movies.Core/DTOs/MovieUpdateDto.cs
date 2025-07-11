@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace MovieApi.Models.DTOs;
+namespace Movies.Core.DTOs;
 //PUT
 public class MovieUpdateDto
 {
@@ -17,5 +17,5 @@ public class MovieUpdateDto
     public string Synopsis { get; set; } = string.Empty;
     public string Language { get; set; } = string.Empty;
     [Range(0, int.MaxValue)]
-    public int Budget {  get; set; }
+    public int Budget { get; set; }
 }

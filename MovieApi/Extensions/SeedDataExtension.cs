@@ -1,13 +1,14 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using MovieApi.Data;
+using Movies.Data;
 using System.Diagnostics;
 
 namespace MovieApi.Extensions;
-
+//TODO: Might have to move this to Services to handle the Seed Data
 public static class SeedDataExtension
 {
     public static async Task SeedDataAsync(this IApplicationBuilder app, bool update = false)
     {
+
         using var scope = app.ApplicationServices.CreateScope();
         var serviceProvider = scope.ServiceProvider;
         var context = serviceProvider.GetRequiredService<MovieContext>();

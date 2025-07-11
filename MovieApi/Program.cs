@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore;
-using MovieApi.Data;
 using MovieApi.Extensions;
+using Movies.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<MovieContext>(options =>
