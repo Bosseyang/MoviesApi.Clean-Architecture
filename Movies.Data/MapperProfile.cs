@@ -15,7 +15,9 @@ public class MapperProfile : Profile
         CreateMap<Movie, MovieDetailDto>()
             .ForMember(dest => dest.Synopsis, opt => opt.MapFrom(src => src.MovieDetails.Synopsis))
             .ForMember(dest => dest.Language, opt => opt.MapFrom(src => src.MovieDetails.Language))
-            .ForMember(dest => dest.Budget, opt => opt.MapFrom(src => src.MovieDetails.Budget));
+            .ForMember(dest => dest.Budget, opt => opt.MapFrom(src => src.MovieDetails.Budget))
+            .ForMember(dest => dest.Actors, opt => opt.MapFrom(src =>
+                src.MovieActors.Select(ma => ma.Actor)));
         CreateMap<MovieCreateDto, Movie>();
         CreateMap<MovieUpdateDto, Movie>()
             .ForMember(dest => dest.MovieDetails, opt => opt.MapFrom((src, dest, _, context) =>
@@ -41,5 +43,6 @@ public class MapperProfile : Profile
 
         //MovieActor
         CreateMap<MovieActorCreateDto, MovieActor>();
+        CreateMap<MovieActor, ActorDto>();
     }
 }

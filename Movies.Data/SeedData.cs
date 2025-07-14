@@ -67,7 +67,7 @@ public class SeedData
                 }).ToList(),
 
                 Reviews = GenerateReviews(rand.Next(1, 10)),
-                Actors = movieActors,
+                //MovieActors = movieActors,
 
             };
             movies.Add(movie);
