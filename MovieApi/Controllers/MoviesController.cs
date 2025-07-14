@@ -2,6 +2,7 @@
 using AutoMapper.QueryableExtensions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Movies.Core.DomainContracts;
 using Movies.Core.DTOs;
 using Movies.Core.Entities;
 using Movies.Data;
@@ -16,37 +17,43 @@ namespace MovieApi.Controllers
     {
         private readonly MovieContext _context;
         private readonly IMapper _mapper;
+        private readonly IMovieRepository _repository;
 
-        public MoviesController(MovieContext context, IMapper mapper)
+        public MoviesController(MovieContext context, IMapper mapper, IMovieRepository repository)
         {
             _context = context;
             _mapper = mapper;
+            _repository = repository;
         }
 
         // GET: api/Movies
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<MovieDto>>> GetMovies([FromQuery] bool withactors = false)
+        public async Task<ActionResult<IEnumerable<MovieDto>>> GetMovies()
         {
+            var movies = await _repository.GetAllAsync();
+            return Ok(_mapper.Map<IEnumerable<MovieDto>>(movies));
 
-            var query = _context.Movies.AsQueryable();
 
-            if (withactors) query = query.Include(m => m.MovieActors);
+            //TODO: Delete eventually when it works properly, moved to be handled in repository.
+            //var query = _context.Movies.AsQueryable();
 
-            var dtoList = await query
-                .ProjectTo<MovieDto>(_mapper.ConfigurationProvider)
-                .ToListAsync();
+            //if (withactors) query = query.Include(m => m.MovieActors);
 
-            if (!dtoList.Any()) return NotFound();
+            //var dtoList = await query
+            //    .ProjectTo<MovieDto>(_mapper.ConfigurationProvider)
+            //    .ToListAsync();
 
-            if (!withactors)
-            {
-                foreach (var dto in dtoList)
-                {
-                    dto.Actors = null!;
-                }
-            }
+            //if (!dtoList.Any()) return NotFound();
 
-            return Ok(dtoList);
+            //if (!withactors)
+            //{
+            //    foreach (var dto in dtoList)
+            //    {
+            //        dto.Actors = null!;
+            //    }
+            //}
+
+            //return Ok(dtoList);
         }
 
         // GET: api/Movies/5
