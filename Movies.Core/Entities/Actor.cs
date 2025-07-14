@@ -10,7 +10,7 @@ public class Actor
     //public int MovieId { get; set; }
 
     // Navigation property N:M throught ActorMovie Connection Table
-    public ICollection<Movie> Movies { get; set; } = new List<Movie>();
+    //public ICollection<Movie> Movies { get; set; } = new List<Movie>();
 
     public ICollection<MovieActor> MovieActors { get; set; } = new List<MovieActor>();
 }

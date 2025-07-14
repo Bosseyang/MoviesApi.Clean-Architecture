@@ -17,7 +17,7 @@ public class Movie
     public ICollection<Review> Reviews { get; set; } = new List<Review>();
 
     // M:N Relation with Actor through join table MovieAction, Each Movie can have several Actors and Each Actor can be in Several Movies
-    public ICollection<Actor> Actors { get; set; } = new List<Actor>();
+    //public ICollection<Actor> Actors { get; set; } = new List<Actor>();
     // Manually setting up MovieActor table
     public ICollection<MovieActor> MovieActors { get; set; } = new List<MovieActor>();
 
