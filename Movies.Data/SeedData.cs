@@ -25,7 +25,7 @@ public class SeedData
         var movies = new List<Movie>();
         Random rand = new Random();
         var genreList = new List<string> { "Action", "Romance", "Drama", "Thriller", "Horror",
-            "Comedy", "Western", "Fantasy", "Science Fiction", "Documentary" +
+            "Comedy", "Western", "Fantasy", "Science Fiction", "Documentary",
             "Musical", "Crime", "Animation", "Sport", "Historical"};
         var languageList = new List<string> { "Swedish", "English", "Spanish", "French", "German", "Italian" };
         var roleList = new List<string> { "Main Antagonist", "Main Protagonist", "Lead", "Supporting", "Background", "Extra", "Bit" };
