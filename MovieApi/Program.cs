@@ -1,6 +1,8 @@
 using Microsoft.EntityFrameworkCore;
 using MovieApi.Extensions;
+using Movies.Core.DomainContracts;
 using Movies.Data;
+using Movies.Data.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<MovieContext>(options =>
@@ -15,7 +17,8 @@ builder.Services.AddControllers(opt => opt.ReturnHttpNotAcceptable = true);
 //{
 //    opt.EnableAnnotations();
 //});
-
+//Might have to move this out to ServiceExtensions later.
+builder.Services.AddScoped<IMovieRepository, MovieRepository>();
 builder.Services.AddAutoMapper(cfg =>
 {
     cfg.AddProfile<MapperProfile>();
