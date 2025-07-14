@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using Movies.Core.DTOs;
 using Movies.Core.Entities;
 
 namespace Movies.Data.Configurations;
@@ -9,6 +10,10 @@ public class MovieConfiguration : IEntityTypeConfiguration<Movie>
     public void Configure(EntityTypeBuilder<Movie> builder)
     {
         builder.HasKey(m => m.Id);
+
+        builder.HasOne(m => m.MovieDetails)
+            .WithOne(md => md.Movie)
+            .HasForeignKey<MovieDetails>(md => md.MovieId);
 
         builder.Property(m => m.Title)
             //.HasColumnName("Title")

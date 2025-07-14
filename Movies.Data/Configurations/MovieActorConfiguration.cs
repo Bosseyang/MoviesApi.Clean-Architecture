@@ -20,7 +20,7 @@ public class MovieActorConfiguration : IEntityTypeConfiguration<MovieActor>
             .HasForeignKey(ma => ma.MovieId);
 
         builder.HasOne(ma => ma.Actor)
-            .WithMany(m => m.MovieActors)
+            .WithMany(a => a.MovieActors)
             .HasForeignKey(ma => ma.ActorId);
 
         //builder.ToTable("MovieActor");
