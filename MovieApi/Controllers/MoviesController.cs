@@ -30,7 +30,7 @@ namespace MovieApi.Controllers
 
             var query = _context.Movies.AsQueryable();
 
-            if (withactors) query = query.Include(m => m.Actors);
+            if (withactors) query = query.Include(m => m.MovieActors);
 
             var dtoList = await query
                 .ProjectTo<MovieDto>(_mapper.ConfigurationProvider)
@@ -57,7 +57,7 @@ namespace MovieApi.Controllers
                 .AsQueryable()
                 .Where(m => m.Id == id);
 
-            if (withactors) query = query.Include(m => m.Actors);
+            if (withactors) query = query.Include(m => m.MovieActors);
 
             var dto = await query
                 .ProjectTo<MovieDto>(_mapper.ConfigurationProvider)

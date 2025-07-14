@@ -26,16 +26,16 @@ namespace MovieApi.Controllers
         {
             if (!MovieExists(movieId)) return NotFound($"Movie with Id: {movieId} not found");
             var movie = await _context.Movies
-                .Include(m => m.Actors)
+                .Include(m => m.MovieActors)
                 .FirstOrDefaultAsync(m => m.Id == movieId);
 
-            var actor = await _context.Actors.FindAsync(actorId);
+            var actor = await _context.MovieActors.FindAsync(actorId);
             if (actor == null) return NotFound($"Actor with Id: {actorId} not found");
 
-            if (movie!.Actors.Any(a => a.Id == actorId))
+            if (movie!.MovieActors.Any(a => a.ActorId == actorId))
                 return BadRequest("Actor already added.");
 
-            movie.Actors.Add(actor);
+            movie.MovieActors.Add(actor);
             await _context.SaveChangesAsync();
 
             var movieDto = _mapper.Map<MovieDto>(movie);
