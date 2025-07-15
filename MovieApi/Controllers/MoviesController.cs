@@ -28,32 +28,8 @@ namespace MovieApi.Controllers
 
         // GET: api/Movies
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<MovieDto>>> GetMovies()
-        {
-            return Ok(_mapper.Map<IEnumerable<MovieDto>>(await _repository.GetAllAsync()));
-
-
-            //TODO: Delete eventually when it works properly, moved to be handled in repository.
-            //var query = _context.Movies.AsQueryable();
-
-            //if (withactors) query = query.Include(m => m.MovieActors);
-
-            //var dtoList = await query
-            //    .ProjectTo<MovieDto>(_mapper.ConfigurationProvider)
-            //    .ToListAsync();
-
-            //if (!dtoList.Any()) return NotFound();
-
-            //if (!withactors)
-            //{
-            //    foreach (var dto in dtoList)
-            //    {
-            //        dto.Actors = null!;
-            //    }
-            //}
-
-            //return Ok(dtoList);
-        }
+        public async Task<ActionResult<IEnumerable<MovieDto>>> GetMovies() 
+            => Ok(_mapper.Map<IEnumerable<MovieDto>>(await _repository.GetAllAsync()));
 
         // GET: api/Movies/{id}
         [HttpGet("{id}")]
@@ -61,23 +37,6 @@ namespace MovieApi.Controllers
         {
             if (!await _repository.ExistsAsync(id)) return NotFound();
             return Ok(_mapper.Map<MovieDto>(await _repository.GetAsync(id, withactors)));
-
-
-            //var query = _context.Movies
-            //    .AsQueryable()
-            //    .Where(m => m.Id == id);
-
-            //if (withactors) query = query.Include(m => m.MovieActors);
-
-            //var dto = await query
-            //    .ProjectTo<MovieDto>(_mapper.ConfigurationProvider)
-            //    .FirstOrDefaultAsync();
-
-            //if (dto == null) return NotFound();
-
-            //if (!withactors) dto.Actors = null!;
-
-            //return Ok(dto);
         }
 
         // GET: api/Movies/{id}/details
@@ -86,14 +45,6 @@ namespace MovieApi.Controllers
         {
             if (!await _repository.ExistsAsync(id)) return NotFound();
             return Ok(_mapper.Map<MovieDetailDto>(await _repository.GetAllDetailsAsync(id)));
-
-            //var dto = await _mapper
-            //    .ProjectTo<MovieDetailDto>(_context.Movies.Where(m => m.Id == id))
-            //    .FirstOrDefaultAsync();
-
-            //if (dto == null) return NotFound();
-
-            //return Ok(dto);
         }
 
         // PUT: api/Movies/5
@@ -142,10 +93,10 @@ namespace MovieApi.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteMovie(int id)
         {
-            var movie = await _context.Movies.FindAsync(id);
-            if (movie == null) return NotFound();
+            var movie = await _repository.GetAsync(id);
+            if (!await _repository.ExistsAsync(id)) return NotFound();
 
-            _context.Movies.Remove(movie);
+            _repository.Remove(movie!);
             await _context.SaveChangesAsync();
 
             return NoContent();
