@@ -86,8 +86,9 @@ namespace MovieApi.Controllers
         [HttpGet("{id}/details")]
         public async Task<ActionResult<MovieDetailDto>> GetMovieDetail(int id)
         {
-           
-            return Ok(_mapper.Map<MovieDetailDto>(await _repository.GetDetailsAsync(id)));
+            var movie = await _repository.GetDetailsAsync(id);
+            if (movie == null) return NotFound();
+            return Ok(_mapper.Map<MovieDetailDto>(movie));
 
             //var dto = await _mapper
             //    .ProjectTo<MovieDetailDto>(_context.Movies.Where(m => m.Id == id))
