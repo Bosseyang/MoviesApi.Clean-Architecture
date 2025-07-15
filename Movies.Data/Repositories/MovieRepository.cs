@@ -16,31 +16,16 @@ public class MovieRepository : IMovieRepository
     public MovieRepository(MovieContext context) => _context = context;
 
     public async Task<IEnumerable<Movie>> GetAllAsync() => await _context.Movies.ToListAsync();
-    //public async Task<IEnumerable<Movie>> GetAllAsync([FromQuery] bool withactors = false)
-    //{
-
-    //    var query = _context.Movies.AsQueryable();
-
-    //    if (withactors) query = query.Include(m => m.MovieActors).ThenInclude(ma => ma.Actor);
-
-    //    return await query.ToListAsync();
-    //}
 
     public async Task<Movie?> GetAsync(int id, bool withActors = false)
     {
         var query = _context.Movies.AsQueryable();
-
         if(withActors)
         {
             query = query
                 .Include(m => m.MovieActors)
                 .ThenInclude(m => m.Actor);
         }
-        //await _context.Movies
-        //.Include(m => m.MovieDetails)
-        //.Include(m => m.Reviews)
-        //.Include(m => m.MovieActors)//.ThenInclude(ma => ma.Actor)
-        //.FirstOrDefaultAsync(m => m.Id == id);
         return await query.FirstOrDefaultAsync(m => m.Id == id);
 
     }

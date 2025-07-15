@@ -130,7 +130,7 @@ namespace MovieApi.Controllers
         {
             var movie = _mapper.Map<Movie>(dto);
 
-            _context.Movies.Add(movie);
+            _repository.Add(movie);
             await _context.SaveChangesAsync();
 
             var movieDto = _mapper.Map<MovieDto>(movie);
