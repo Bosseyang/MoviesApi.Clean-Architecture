@@ -4,72 +4,79 @@ using Microsoft.EntityFrameworkCore;
 using Movies.Core.DTOs;
 using Movies.Core.Entities;
 using Movies.Data;
+using Movies.Data.Repositories;
 
+
+// TODO: Might want to move the logic etc out of there eventually.
 namespace MovieApi.Controllers
 {
     [ApiController]
     [Route("api/movies")]
     public class ActorsController : ControllerBase
     {
-        private readonly MovieContext _context;
+        private readonly IActorRepository _repository;
         private readonly IMapper _mapper;
 
-        public ActorsController(MovieContext context, IMapper mapper)
+        public ActorsController(IActorRepository repository, IMapper mapper)
         {
-            _context = context;
+            _repository = repository;
             _mapper = mapper;
+        }
+
+
+        // GET /api/movies/{movieId}/actors
+        [HttpGet("{movieId}/actors")]
+        public async Task<ActionResult<IEnumerable<MovieActorDto>>> GetActorsByMovie(int movieId)
+        {
+            if (!await _repository.MovieExistsAsync(movieId))
+                return NotFound($"Movie with Id: {movieId} not found");
+
+            var movieActors = await _repository.GetActorsByMovieAsync(movieId);
+            var dto = _mapper.Map<IEnumerable<MovieActorDto>>(movieActors);
+
+            return Ok(dto);
         }
 
         // POST /api/movies/{movieId}/actors/{actorId}
         [HttpPost("{movieId}/actors/{actorId}")]
         public async Task<ActionResult<MovieDto>> AddActorToMovie(int movieId, int actorId)
         {
-            if (!MovieExists(movieId)) return NotFound($"Movie with Id: {movieId} not found");
-            var movie = await _context.Movies
-                .Include(m => m.MovieActors)
-                .FirstOrDefaultAsync(m => m.Id == movieId);
+            if (!await _repository.MovieExistsAsync(movieId))
+                return NotFound($"Movie with Id: {movieId} not found");
 
-            var actor = await _context.MovieActors.FindAsync(actorId);
-            if (actor == null) return NotFound($"Actor with Id: {actorId} not found");
+            if (!await _repository.ActorExistsAsync(actorId))
+                return NotFound($"Actor with Id: {actorId} not found");
 
-            if (movie!.MovieActors.Any(a => a.ActorId == actorId))
+            if (await _repository.ActorAlreadyInMovieAsync(movieId, actorId))
                 return BadRequest("Actor already added.");
 
-            movie.MovieActors.Add(actor);
-            await _context.SaveChangesAsync();
+            var movie = await _repository.GetMovieWithActorsAsync(movieId);
+            if (movie == null) return NotFound();
+
+            await _repository.AddActorToMovieAsync(movie, actorId);
 
             var movieDto = _mapper.Map<MovieDto>(movie);
-            return CreatedAtAction(actionName: "GetMovie",
-                                    controllerName: "Movies",
-                                    new { id = movieDto.Id }, movieDto);
+            return CreatedAtAction("GetMovie", "Movies", new { id = movieDto.Id }, movieDto);
         }
 
-        // POST /api/movies/{movieId}/actors
+// POST /api/movies/{movieId}/actors
         [HttpPost("{movieId}/actors")]
-        public async Task<ActionResult<MovieDto>> AddActorToMovieWithRole(int movieId, MovieActorCreateDto dto)
+        public async Task<ActionResult> AddActorToMovieWithRole(int movieId, MovieActorCreateDto dto)
         {
-            if (!MovieExists(movieId)) return NotFound($"Movie with Id: {movieId} not found");
+            if (!await _repository.MovieExistsAsync(movieId))
+                return NotFound($"Movie with Id: {movieId} not found");
 
-            var actor = await _context.Actors.FindAsync(dto.ActorId);
-            if (actor == null) return NotFound($"Actor with Id: {dto.ActorId} not found");
+            if (!await _repository.ActorExistsAsync(dto.ActorId))
+                return NotFound($"Actor with Id: {dto.ActorId} not found");
 
-            var actorExists = await _context.MovieActors.AnyAsync(ma => ma.MovieId == movieId && ma.ActorId == dto.ActorId);
-            if (actorExists) return BadRequest("Actor is already added to this movie");
+            if (await _repository.ActorAlreadyInMovieAsync(movieId, dto.ActorId))
+                return BadRequest("Actor already added to this movie.");
 
             var movieActor = _mapper.Map<MovieActor>(dto);
-            movieActor.MovieId = movieId;
-
-            _context.MovieActors.Add(movieActor);
-            await _context.SaveChangesAsync();
+            await _repository.AddActorToMovieWithRoleAsync(movieId, movieActor);
 
             return NoContent();
         }
-
-        private bool MovieExists(int id)
-        {
-            return _context.Movies.Any(e => e.Id == id);
-        }
-
     }
 }
 

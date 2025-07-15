@@ -48,5 +48,10 @@ public class MapperProfile : Profile
         //MovieActor
         CreateMap<MovieActorCreateDto, MovieActor>();
         CreateMap<MovieActor, ActorDto>();
+        CreateMap<MovieActor, MovieActorDto>()
+            .ForMember(dest => dest.ActorId, opt => opt.MapFrom(src => src.Actor.Id))
+            .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Actor.Name))
+            .ForMember(dest => dest.BirthYear, opt => opt.MapFrom(src => src.Actor.BirthYear))
+            .ForMember(dest => dest.Role, opt => opt.MapFrom(src => src.Role));
     }
 }
