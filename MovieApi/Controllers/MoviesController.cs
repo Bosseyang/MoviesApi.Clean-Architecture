@@ -56,38 +56,46 @@ namespace MovieApi.Controllers
             //return Ok(dtoList);
         }
 
-        // GET: api/Movies/5
+        // GET: api/Movies/{id}
         [HttpGet("{id}")]
         public async Task<ActionResult<MovieDto>> GetMovie(int id, [FromQuery] bool withactors = false)
         {
-            var query = _context.Movies
-                .AsQueryable()
-                .Where(m => m.Id == id);
+            var movie = await _repository.GetAsync(id, withactors);
+            if (movie == null) return NotFound();
+            return Ok(_mapper.Map<MovieDto>(movie));
 
-            if (withactors) query = query.Include(m => m.MovieActors);
 
-            var dto = await query
-                .ProjectTo<MovieDto>(_mapper.ConfigurationProvider)
-                .FirstOrDefaultAsync();
+            //var query = _context.Movies
+            //    .AsQueryable()
+            //    .Where(m => m.Id == id);
 
-            if (dto == null) return NotFound();
+            //if (withactors) query = query.Include(m => m.MovieActors);
 
-            if (!withactors) dto.Actors = null!;
+            //var dto = await query
+            //    .ProjectTo<MovieDto>(_mapper.ConfigurationProvider)
+            //    .FirstOrDefaultAsync();
 
-            return Ok(dto);
+            //if (dto == null) return NotFound();
+
+            //if (!withactors) dto.Actors = null!;
+
+            //return Ok(dto);
         }
 
         // GET: api/Movies/{id}/details
         [HttpGet("{id}/details")]
         public async Task<ActionResult<MovieDetailDto>> GetMovieDetail(int id)
         {
-            var dto = await _mapper
-                .ProjectTo<MovieDetailDto>(_context.Movies.Where(m => m.Id == id))
-                .FirstOrDefaultAsync();
+           
+            return Ok(_mapper.Map<MovieDetailDto>(await _repository.GetDetailsAsync(id)));
 
-            if (dto == null) return NotFound();
+            //var dto = await _mapper
+            //    .ProjectTo<MovieDetailDto>(_context.Movies.Where(m => m.Id == id))
+            //    .FirstOrDefaultAsync();
 
-            return Ok(dto);
+            //if (dto == null) return NotFound();
+
+            //return Ok(dto);
         }
 
         // PUT: api/Movies/5

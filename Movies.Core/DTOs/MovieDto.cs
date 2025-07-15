@@ -13,6 +13,6 @@ public class MovieDto
     public int Duration { get; set; }
     //For query string, if we use GET without query string, we don't want to show Actors=Null
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
-    public List<ActorDto>? Actors { get; set; }
+    public List<ActorDto>? Actors { get; set; } = new List<ActorDto>();
 
 }

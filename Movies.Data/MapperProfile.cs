@@ -9,7 +9,11 @@ public class MapperProfile : Profile
     public MapperProfile()
     {
         //Movie
-        CreateMap<Movie, MovieDto>();
+        //CreateMap<Movie, MovieDto>();
+        CreateMap<Movie, MovieDto>()
+            .ForMember(dest => dest.Actors, opt => opt.MapFrom(src =>
+                src.MovieActors.Select(ma => ma.Actor)));
+
         //Dont show Actors[] as empty if we choose to not show actors
         //.ForMember(dest => dest.Actors, opt => opt.Condition(src => src.Actors.Any()));
         CreateMap<Movie, MovieDetailDto>()
