@@ -44,7 +44,7 @@ public class MovieRepository : IMovieRepository
         return await query.FirstOrDefaultAsync(m => m.Id == id);
 
     }
-    public async Task<Movie?> GetDetailsAsync(int id)
+    public async Task<Movie?> GetAllDetailsAsync(int id)
     {
         return await _context.Movies
             .Include(m => m.MovieDetails)
@@ -52,8 +52,22 @@ public class MovieRepository : IMovieRepository
             .Include(m => m.MovieActors).ThenInclude(ma => ma.Actor)
             .FirstOrDefaultAsync(m => m.Id == id);
     }
+    public async Task<Movie?> GetMovieDetailsAsync(int id)
+    {
+        return await _context.Movies
+            .Include(m => m.MovieDetails)
+            .FirstOrDefaultAsync(m => m.Id == id);
+    }
+
+
+    public async Task<bool> ExistsAsync(int id)
+    {
+        return await _context.Movies.AnyAsync(m => m.Id == id);
+    }
 
     public void Add(Movie movie) => _context.Movies.Add(movie);
     public void Remove(Movie movie) => _context.Movies.Remove(movie);
     public void Update(Movie movie) => _context.Movies.Update(movie);
+
+
 }

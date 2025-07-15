@@ -59,7 +59,7 @@ namespace MovieApi.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<MovieDto>> GetMovie(int id, [FromQuery] bool withactors = false)
         {
-            if (!MovieExists(id)) return NotFound();
+            if (!await _repository.ExistsAsync(id)) return NotFound();
             return Ok(_mapper.Map<MovieDto>(await _repository.GetAsync(id, withactors)));
 
 
@@ -84,8 +84,8 @@ namespace MovieApi.Controllers
         [HttpGet("{id}/details")]
         public async Task<ActionResult<MovieDetailDto>> GetMovieDetail(int id)
         {
-            if (!MovieExists(id)) return NotFound();
-            return Ok(_mapper.Map<MovieDetailDto>(await _repository.GetDetailsAsync(id)));
+            if (!await _repository.ExistsAsync(id)) return NotFound();
+            return Ok(_mapper.Map<MovieDetailDto>(await _repository.GetAllDetailsAsync(id)));
 
             //var dto = await _mapper
             //    .ProjectTo<MovieDetailDto>(_context.Movies.Where(m => m.Id == id))
@@ -101,13 +101,13 @@ namespace MovieApi.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateMovie(int id, MovieUpdateDto dto)
         {
-            var movie = await _context.Movies
-                .Include(m => m.MovieDetails)
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var movie = await _repository.GetMovieDetailsAsync(id);
 
-            if (movie == null) return NotFound();
+            if (!await _repository.ExistsAsync(id)) return NotFound();
 
             _mapper.Map(dto, movie);
+
+            _repository.Update(movie!);
 
             try
             {
@@ -115,14 +115,9 @@ namespace MovieApi.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!MovieExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
+                if (!await _repository.ExistsAsync(id)) return NotFound();
+         
+                else throw;
             }
 
             return NoContent();

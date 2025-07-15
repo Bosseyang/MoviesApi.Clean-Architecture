@@ -14,9 +14,13 @@ public interface IMovieRepository
 
     //Task<IEnumerable<Movie>> GetAllAsync([FromQuery] bool withactors = false);
     Task<Movie?> GetAsync(int id, bool withActors = false);
-    Task<Movie?> GetDetailsAsync(int id);
+    Task<Movie?> GetAllDetailsAsync(int id);
+    Task<Movie?> GetMovieDetailsAsync(int id);
     //Task<bool> AnyAsync(int id);
+    Task<bool> ExistsAsync(int id);
+
     void Add(Movie movie);
     void Update(Movie movie);
     void Remove(Movie movie);
+
 }
