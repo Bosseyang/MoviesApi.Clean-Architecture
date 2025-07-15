@@ -8,25 +8,48 @@ using System.Threading.Tasks;
 
 namespace Movies.Data.Repositories;
 
-public class ActorRepository
+public class ActorRepository : IActorRepository
 {
     private readonly MovieContext _context;
     public ActorRepository(MovieContext context) => _context = context;
-    public async Task AddActorToMovieAsync(int movieId, int actorId, string role)
-    {
-        var movieActor = new MovieActor
-        {
-            MovieId = movieId,
-            ActorId = actorId,
-            Role = role
-        };
 
-        _context.MovieActors.Add(movieActor);
+    public async Task<Movie?> GetMovieWithActorsAsync(int movieId)
+    {
+        return await _context.Movies
+            .Include(m => m.MovieActors)
+            .FirstOrDefaultAsync(m => m.Id == movieId);
+    }
+
+    public async Task<bool> ActorAlreadyInMovieAsync(int movieId, int actorId)
+    {
+        return await _context.MovieActors
+            .AnyAsync(ma => ma.MovieId == movieId && ma.ActorId == actorId);
+    }
+
+    public async Task AddActorToMovieAsync(Movie movie, int actorId)
+    {
+        movie.MovieActors.Add(new MovieActor
+        {
+            MovieId = movie.Id,
+            ActorId = actorId
+        });
+
         await _context.SaveChangesAsync();
     }
 
-    public void AddActorToMovieWithRoleAsync(int movieId)
+    public async Task AddActorWithRoleToMovieAsync(int movieId, MovieActor movieActor)
     {
+        movieActor.MovieId = movieId;
+        _context.MovieActors.Add(movieActor);
+        await _context.SaveChangesAsync();
+    }
+    public async Task<bool> MovieExistsAsync(int movieId)
+    {
+        return await _context.Movies.AnyAsync(m => m.Id == movieId);
+    }
 
+    public async Task<bool> ActorExistsAsync(int actorId)
+    {
+        return await _context.Actors.AnyAsync(a => a.Id == actorId);
     }
 }
