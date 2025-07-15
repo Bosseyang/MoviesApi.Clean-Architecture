@@ -31,8 +31,7 @@ namespace MovieApi.Controllers
             if (!await _repository.MovieExistsAsync(movieId))
                 return NotFound($"Movie with Id: {movieId} not found");
 
-            var movieActors = await _repository.GetActorsByMovieAsync(movieId);
-            var dto = _mapper.Map<IEnumerable<MovieActorDto>>(movieActors);
+            var dto = _mapper.Map<IEnumerable<MovieActorDto>>(await _repository.GetActorsByMovieAsync(movieId));
 
             return Ok(dto);
         }
