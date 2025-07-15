@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Movies.Core.DomainContracts;
 using Movies.Core.DTOs;
 using Movies.Data;
 
@@ -12,27 +13,23 @@ namespace MovieApi.Controllers;
 //TODO: Add Swashbuckle.AspNetCore.Annotations 
 public class ReviewsController : ControllerBase
 {
-    private readonly MovieContext _context;
+    private readonly IReviewRepository _repository;
     private readonly IMapper _mapper;
 
-    public ReviewsController(MovieContext context, IMapper mapper)
+    public ReviewsController(IReviewRepository repository, IMapper mapper)
     {
-        _context = context;
+        _repository = repository;
         _mapper = mapper;
     }
 
-    //GET: /api/movies/{movieId}/reviews
+    // GET: /api/movies/{movieId}/reviews
     [HttpGet("{movieId}/reviews")]
     public async Task<ActionResult<IEnumerable<ReviewDto>>> GetReviews(int movieId)
     {
-        var movieExists = await _context.Movies.AnyAsync(m => m.Id == movieId);
-        if (!movieExists) return NotFound($"Movie with Id: {movieId} does not exist");
+        if (!await _repository.MovieExistsAsync(movieId))
+            return NotFound($"Movie with Id: {movieId} does not exist");
 
-        var dto = await _mapper
-            .ProjectTo<ReviewDto>(_context.Reviews.Where(r => r.MovieId == movieId))
-            .ToListAsync();
-
-        return Ok(dto);
+        return Ok(_mapper.Map<IEnumerable<ReviewDto>>(await _repository.GetReviewsByMovieAsync(movieId)));
     }
 }
 
