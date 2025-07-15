@@ -19,6 +19,7 @@ builder.Services.AddControllers(opt => opt.ReturnHttpNotAcceptable = true);
 //});
 //Might have to move this out to ServiceExtensions later.
 builder.Services.AddScoped<IMovieRepository, MovieRepository>();
+builder.Services.AddScoped<IActorRepository, ActorRepository>();
 builder.Services.AddAutoMapper(cfg =>
 {
     cfg.AddProfile<MapperProfile>();
