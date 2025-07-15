@@ -30,8 +30,7 @@ namespace MovieApi.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<MovieDto>>> GetMovies()
         {
-            var movies = await _repository.GetAllAsync();
-            return Ok(_mapper.Map<IEnumerable<MovieDto>>(movies));
+            return Ok(_mapper.Map<IEnumerable<MovieDto>>(await _repository.GetAllAsync()));
 
 
             //TODO: Delete eventually when it works properly, moved to be handled in repository.
@@ -60,9 +59,8 @@ namespace MovieApi.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<MovieDto>> GetMovie(int id, [FromQuery] bool withactors = false)
         {
-            var movie = await _repository.GetAsync(id, withactors);
-            if (movie == null) return NotFound();
-            return Ok(_mapper.Map<MovieDto>(movie));
+            if (!MovieExists(id)) return NotFound();
+            return Ok(_mapper.Map<MovieDto>(await _repository.GetAsync(id, withactors)));
 
 
             //var query = _context.Movies
@@ -86,9 +84,8 @@ namespace MovieApi.Controllers
         [HttpGet("{id}/details")]
         public async Task<ActionResult<MovieDetailDto>> GetMovieDetail(int id)
         {
-            var movie = await _repository.GetDetailsAsync(id);
-            if (movie == null) return NotFound();
-            return Ok(_mapper.Map<MovieDetailDto>(movie));
+            if (!MovieExists(id)) return NotFound();
+            return Ok(_mapper.Map<MovieDetailDto>(await _repository.GetDetailsAsync(id)));
 
             //var dto = await _mapper
             //    .ProjectTo<MovieDetailDto>(_context.Movies.Where(m => m.Id == id))
