@@ -11,4 +11,8 @@ public interface IReviewRepository
 {
     Task<bool> MovieExistsAsync(int movieId);
     Task<IEnumerable<Review>> GetReviewsByMovieAsync(int movieId);
+
+    void Add(Review review);
+    //void Update(Review review);
+    void Remove(Review review);
 }
