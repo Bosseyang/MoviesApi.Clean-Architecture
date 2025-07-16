@@ -26,4 +26,7 @@ public class ReviewRepository : IReviewRepository
         return await _context.Movies.AnyAsync(m => m.Id == movieId);
     }
 
+    public void Add(Review review) => _context.Reviews.Add(review);
+    public void Remove(Review review) => _context.Reviews.Remove(review);
+
 }

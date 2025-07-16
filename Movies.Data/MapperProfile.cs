@@ -43,6 +43,7 @@ public class MapperProfile : Profile
 
         // Review
         CreateMap<Review, ReviewDto>().ReverseMap();
+        CreateMap<ReviewCreateDto, Review>();
         //CreateMap<Movie, ReviewDto>();
 
         //MovieActor
