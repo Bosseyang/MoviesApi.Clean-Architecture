@@ -15,36 +15,34 @@ namespace MovieApi.Controllers
     //TODO: Add Swashbuckle.AspNetCore.Annotations 
     public class MoviesController : ControllerBase
     {
-        private readonly MovieContext _context;
         private readonly IMapper _mapper;
-        private readonly IMovieRepository _repository;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public MoviesController(MovieContext context, IMapper mapper, IMovieRepository repository)
+        public MoviesController(IMapper mapper, IUnitOfWork unitOfWork)
         {
-            _context = context;
             _mapper = mapper;
-            _repository = repository;
+            _unitOfWork = unitOfWork;
         }
 
         // GET: api/Movies
         [HttpGet]
         public async Task<ActionResult<IEnumerable<MovieDto>>> GetMovies() 
-            => Ok(_mapper.Map<IEnumerable<MovieDto>>(await _repository.GetAllAsync()));
+            => Ok(_mapper.Map<IEnumerable<MovieDto>>(await _unitOfWork.Movies.GetAllAsync()));
 
         // GET: api/Movies/{id}
         [HttpGet("{id}")]
         public async Task<ActionResult<MovieDto>> GetMovie(int id, [FromQuery] bool withactors = false)
         {
-            if (!await _repository.ExistsAsync(id)) return NotFound();
-            return Ok(_mapper.Map<MovieDto>(await _repository.GetAsync(id, withactors)));
+            if (!await _unitOfWork.Movies.ExistsAsync(id)) return NotFound();
+            return Ok(_mapper.Map<MovieDto>(await _unitOfWork.Movies.GetAsync(id, withactors)));
         }
 
         // GET: api/Movies/{id}/details
         [HttpGet("{id}/details")]
         public async Task<ActionResult<MovieDetailDto>> GetMovieDetail(int id)
         {
-            if (!await _repository.ExistsAsync(id)) return NotFound();
-            return Ok(_mapper.Map<MovieDetailDto>(await _repository.GetAllDetailsAsync(id)));
+            if (!await _unitOfWork.Movies.ExistsAsync(id)) return NotFound();
+            return Ok(_mapper.Map<MovieDetailDto>(await _unitOfWork.Movies.GetAllDetailsAsync(id)));
         }
 
         // PUT: api/Movies/5
@@ -52,21 +50,21 @@ namespace MovieApi.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateMovie(int id, MovieUpdateDto dto)
         {
-            var movie = await _repository.GetMovieDetailsAsync(id);
+            var movie = await _unitOfWork.Movies.GetMovieDetailsAsync(id);
 
-            if (!await _repository.ExistsAsync(id)) return NotFound();
+            if (!await _unitOfWork.Movies.ExistsAsync(id)) return NotFound();
 
             _mapper.Map(dto, movie);
 
-            _repository.Update(movie!);
+            _unitOfWork.Movies.Update(movie!);
 
             try
             {
-                await _context.SaveChangesAsync();
+                await _unitOfWork.CompleteAsync();
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!await _repository.ExistsAsync(id)) return NotFound();
+                if (!await _unitOfWork.Movies.ExistsAsync(id)) return NotFound();
          
                 else throw;
             }
@@ -81,8 +79,8 @@ namespace MovieApi.Controllers
         {
             var movie = _mapper.Map<Movie>(dto);
 
-            _repository.Add(movie);
-            await _context.SaveChangesAsync();
+            _unitOfWork.Movies.Add(movie);
+            await _unitOfWork.CompleteAsync();
 
             var movieDto = _mapper.Map<MovieDto>(movie);
 
@@ -93,11 +91,11 @@ namespace MovieApi.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteMovie(int id)
         {
-            var movie = await _repository.GetAsync(id);
-            if (!await _repository.ExistsAsync(id)) return NotFound();
+            var movie = await _unitOfWork.Movies.GetAsync(id);
+            if (!await _unitOfWork.Movies.ExistsAsync(id)) return NotFound();
 
-            _repository.Remove(movie!);
-            await _context.SaveChangesAsync();
+            _unitOfWork.Movies.Remove(movie!);
+            await _unitOfWork.CompleteAsync();
 
             return NoContent();
         }
