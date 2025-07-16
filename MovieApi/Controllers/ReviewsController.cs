@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Movies.Core.DomainContracts;
 using Movies.Core.DTOs;
+using Movies.Core.Entities;
 using Movies.Data;
 
 namespace MovieApi.Controllers;
@@ -30,6 +31,22 @@ public class ReviewsController : ControllerBase
             return NotFound($"Movie with Id: {movieId} does not exist");
 
         return Ok(_mapper.Map<IEnumerable<ReviewDto>>(await _unitOfWork.Reviews.GetReviewsByMovieAsync(movieId)));
+    }
+
+    // POST: /api/movies/{movieId}/reviews
+    [HttpPost("{movieId}/reviews")]
+    public async Task<IActionResult> AddReview(int movieId, ReviewCreateDto dto)
+    {
+        var exists = await _unitOfWork.Movies.ExistsAsync(movieId);
+        if (!exists) return NotFound($"Movie with Id: {movieId} does not exist");
+
+        var review = _mapper.Map<Review>(dto);
+        review.MovieId = movieId;
+
+        _unitOfWork.Reviews.Add(review);
+        await _unitOfWork.CompleteAsync();
+
+        return NoContent();
     }
 }
 
