@@ -21,6 +21,8 @@ builder.Services.AddControllers(opt => opt.ReturnHttpNotAcceptable = true);
 builder.Services.AddScoped<IMovieRepository, MovieRepository>();
 builder.Services.AddScoped<IActorRepository, ActorRepository>();
 builder.Services.AddScoped<IReviewRepository, ReviewRepository>();
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+
 builder.Services.AddAutoMapper(cfg =>
 {
     cfg.AddProfile<MapperProfile>();
