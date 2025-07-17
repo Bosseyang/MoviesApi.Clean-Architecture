@@ -10,10 +10,21 @@ public class MoviesController : ControllerBase
 
     public MoviesController(IServiceManager services) => _services = services;
 
-    // GET: api/movies
+    // GET: api/movies?pagingParams=true
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<MovieDto>>> GetMovies()
-        => Ok(await _services.Movies.GetMoviesAsync());
+    public async Task<IActionResult> GetMovies([FromQuery] PagingParams pagingParams)
+    {
+        var result = await _services.Movies.GetPagedMoviesAsync(pagingParams);
+
+        Response.Headers.Append("X-Pagination", System.Text.Json.JsonSerializer.Serialize(result.Meta));
+
+        return Ok(result);
+    }
+
+    //// GET: api/movies
+    //[HttpGet]
+    //public async Task<ActionResult<IEnumerable<MovieDto>>> GetMovies()
+    //    => Ok(await _services.Movies.GetMoviesAsync());
 
     // GET: api/movies/1
     [HttpGet("{id}")]

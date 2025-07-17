@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Movies.Core.DTOs;
 using Movies.Core.Entities;
 using System;
 using System.Collections.Generic;
@@ -11,7 +12,7 @@ namespace Movies.Core.DomainContracts;
 public interface IMovieRepository
 {
     Task<IEnumerable<Movie>> GetMoviesAsync();
-
+    Task<PagedResult<Movie>> GetPagedMoviesAsync(PagingParams pagingParams);
     //Task<IEnumerable<Movie>> GetAllAsync([FromQuery] bool withactors = false);
     Task<Movie?> GetMovieAsync(int id, bool withActors = false);
     Task<Movie?> GetAllMovieDetailsAsync(int id);

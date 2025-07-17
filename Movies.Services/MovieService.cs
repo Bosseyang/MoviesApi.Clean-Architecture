@@ -24,6 +24,17 @@ public class MovieService : IMovieService
         _mapper = mapper;
     }
 
+    public async Task<PagedResult<MovieDto>> GetPagedMoviesAsync(PagingParams pagingParams)
+    {
+        var pagedMovies = await _unitOfWork.Movies.GetPagedMoviesAsync(pagingParams);
+
+        return new PagedResult<MovieDto>
+        {
+            Data = _mapper.Map<IEnumerable<MovieDto>>(pagedMovies.Data),
+            Meta = pagedMovies.Meta
+        };
+    }
+
     public async Task<IEnumerable<MovieDto>> GetMoviesAsync()
     {
         var movies = await _unitOfWork.Movies.GetMoviesAsync();
