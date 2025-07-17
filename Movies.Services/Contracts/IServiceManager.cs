@@ -4,9 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Movies.Services.Contracts
+namespace Movies.Services.Contracts;
+
+public interface IServiceManager
 {
-    internal class IServiceManager
-    {
-    }
+    IMovieService Movies { get; }
+    IReviewService Reviews { get; }
+    IActorService Actors { get; }
 }
