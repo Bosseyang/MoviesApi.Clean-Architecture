@@ -26,10 +26,50 @@ public class ActorRepository : IActorRepository
 
         await _context.SaveChangesAsync();
     }
+    public async Task AddActorToMovieAsync(int movieId, int actorId)
+    {
+        var movie = await _context.Movies
+            .Include(m => m.MovieActors)
+            .FirstOrDefaultAsync(m => m.Id == movieId);
+
+        if (movie == null) throw new Exception("Movie not found");
+
+        movie.MovieActors.Add(new MovieActor
+        {
+            MovieId = movieId,
+            ActorId = actorId
+        });
+
+        await _context.SaveChangesAsync();
+    }
 
     public async Task AddActorToMovieWithRoleAsync(int movieId, MovieActor movieActor)
     {
         movieActor.MovieId = movieId;
+        _context.MovieActors.Add(movieActor);
+        await _context.SaveChangesAsync();
+    }
+    public async Task AddActorToMovieWithRoleAsync(int movieId, int actorId, string role)
+    {
+        var movie = await _context.Movies
+            .Include(m => m.MovieActors)
+            .FirstOrDefaultAsync(m => m.Id == movieId);
+        if (movie == null) throw new Exception("Movie not found");
+
+        var actor = await _context.Actors.FindAsync(actorId);
+        if (actor == null) throw new Exception("Actor not found");
+
+        var alreadyExists = await _context.MovieActors
+            .AnyAsync(ma => ma.MovieId == movieId && ma.ActorId == actorId);
+        if (alreadyExists) throw new Exception("Actor already added to movie.");
+
+        var movieActor = new MovieActor
+        {
+            MovieId = movieId,
+            ActorId = actorId,
+            Role = role
+        };
+
         _context.MovieActors.Add(movieActor);
         await _context.SaveChangesAsync();
     }

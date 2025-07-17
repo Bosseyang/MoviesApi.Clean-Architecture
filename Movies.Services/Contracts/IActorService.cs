@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Movies.Core.DTOs;
 
-namespace Movies.Services.Contracts
+public interface IActorService
 {
-    internal class IActorService
-    {
-    }
+    Task<MovieDto?> AddActorToMovieAsync(int movieId, int actorId);
+    Task<bool?> AddActorToMovieWithRoleAsync(int movieId, MovieActorCreateDto dto);
+    Task<IEnumerable<MovieActorDto>?> GetActorsByMovieAsync(int movieId);
 }
