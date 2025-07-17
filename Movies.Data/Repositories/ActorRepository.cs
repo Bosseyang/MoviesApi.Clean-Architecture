@@ -16,8 +16,6 @@ public class ActorRepository : IActorRepository
             .FirstOrDefaultAsync(m => m.Id == movieId);
     }
 
-
-
     public async Task AddActorToMovieAsync(Movie movie, int actorId)
     {
         movie.MovieActors.Add(new MovieActor
@@ -44,7 +42,6 @@ public class ActorRepository : IActorRepository
             .ToListAsync();
     }
 
-
     public async Task<bool> ActorAlreadyInMovieAsync(int movieId, int actorId)
     {
         return await _context.MovieActors
@@ -59,6 +56,4 @@ public class ActorRepository : IActorRepository
     {
         return await _context.Actors.AnyAsync(a => a.Id == actorId);
     }
-
-
 }
