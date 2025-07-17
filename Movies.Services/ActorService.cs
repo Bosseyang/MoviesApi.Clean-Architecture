@@ -13,7 +13,16 @@ public class ActorService : IActorService
         _unitOfWork = unitOfWork;
         _mapper = mapper;
     }
+    public async Task<PagedResult<ActorDto>> GetPagedActorsAsync(PagingParams pagingParams)
+    {
+        var paged = await _unitOfWork.Actors.GetPagedActorsAsync(pagingParams);
 
+        return new PagedResult<ActorDto>
+        {
+            Data = _mapper.Map<IEnumerable<ActorDto>>(paged.Data),
+            Meta = paged.Meta
+        };
+    }
     public async Task<IEnumerable<MovieActorDto>?> GetActorsByMovieAsync(int movieId)
     {
         if (!await _unitOfWork.Actors.MovieExistsAsync(movieId)) return null;
@@ -21,6 +30,7 @@ public class ActorService : IActorService
         var movieActors = await _unitOfWork.Actors.GetActorsByMovieAsync(movieId);
         return _mapper.Map<IEnumerable<MovieActorDto>>(movieActors);
     }
+
 
     public async Task<MovieDto?> AddActorToMovieAsync(int movieId, int actorId)
     {

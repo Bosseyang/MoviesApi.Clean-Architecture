@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Movies.Core.DTOs;
 using Movies.Services.Contracts;
+using System.Text.Json;
 
 namespace MovieApi.Controllers
 {
@@ -10,12 +11,18 @@ namespace MovieApi.Controllers
     {
         private readonly IServiceManager _services;
 
-        public ActorsController(IServiceManager services)
+        public ActorsController(IServiceManager services) => _services = services;
+
+        // GET: /api/movies/actors
+        [HttpGet("actors")]
+        public async Task<IActionResult> GetActors([FromQuery] PagingParams pagingParams)
         {
-            _services = services;
+            var result = await _services.Actors.GetPagedActorsAsync(pagingParams);
+            Response.Headers.Append("X-Pagination", JsonSerializer.Serialize(result.Meta));
+            return Ok(result);
         }
 
-        // GET /api/movies/{movieId}/actors
+        // GET: /api/movies/{movieId}/actors
         [HttpGet("{movieId}/actors")]
         public async Task<ActionResult<IEnumerable<MovieActorDto>>> GetActorsByMovie(int movieId)
         {
@@ -23,7 +30,7 @@ namespace MovieApi.Controllers
             return result is null ? NotFound($"Movie with Id: {movieId} not found") : Ok(result);
         }
 
-        // POST /api/movies/{movieId}/actors/{actorId}
+        // POST: /api/movies/{movieId}/actors/{actorId}
         [HttpPost("{movieId}/actors/{actorId}")]
         public async Task<ActionResult<MovieDto>> AddActorToMovie(int movieId, int actorId)
         {
@@ -35,7 +42,7 @@ namespace MovieApi.Controllers
             };
         }
 
-        // POST /api/movies/{movieId}/actors
+        // POST: /api/movies/{movieId}/actors
         [HttpPost("{movieId}/actors")]
         public async Task<ActionResult> AddActorToMovieWithRole(int movieId, MovieActorCreateDto dto)
         {

@@ -2,12 +2,38 @@
 using Movies.Core.DTOs;
 using Movies.Core.Entities;
 
+
 namespace Movies.Data.Repositories;
 
 public class ActorRepository : IActorRepository
 {
     private readonly MovieContext _context;
     public ActorRepository(MovieContext context) => _context = context;
+
+    public async Task<PagedResult<Actor>> GetPagedActorsAsync(PagingParams pagingParams)
+    {
+        var query = _context.Actors.AsQueryable();
+
+        var totalItems = await query.CountAsync();
+        var totalPages = (int)Math.Ceiling(totalItems / (double)pagingParams.PageSize);
+
+        var items = await query
+            .Skip((pagingParams.PageNumber - 1) * pagingParams.PageSize)
+            .Take(pagingParams.PageSize)
+            .ToListAsync();
+
+        return new PagedResult<Actor>
+        {
+            Data = items,
+            Meta = new MetaData
+            {
+                TotalItems = totalItems,
+                CurrentPage = pagingParams.PageNumber,
+                TotalPages = totalPages,
+                PageSize = pagingParams.PageSize
+            }
+        };
+    }
 
     public async Task<Movie?> GetMovieWithActorsAsync(int movieId)
     {

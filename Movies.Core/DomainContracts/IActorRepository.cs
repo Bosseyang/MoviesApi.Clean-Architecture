@@ -1,4 +1,5 @@
-﻿using Movies.Core.Entities;
+﻿using Movies.Core.DTOs;
+using Movies.Core.Entities;
 
 namespace Movies.Data.Repositories
 {
@@ -12,6 +13,8 @@ namespace Movies.Data.Repositories
         Task<IEnumerable<MovieActor>> GetActorsByMovieAsync(int movieId);
         Task<Movie?> GetMovieWithActorsAsync(int movieId);
         Task<bool> MovieExistsAsync(int movieId);
-        
+        Task<PagedResult<Actor>> GetPagedActorsAsync(PagingParams pagingParams);
+
+
     }
 }
