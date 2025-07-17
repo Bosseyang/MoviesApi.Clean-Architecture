@@ -2,6 +2,7 @@
 using Movies.Core.DomainContracts;
 using Movies.Core.DTOs;
 using Movies.Core.Entities;
+using Movies.Core.Exceptions;
 using Movies.Services.Contracts;
 
 namespace Movies.Services
@@ -15,6 +16,19 @@ namespace Movies.Services
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
+        }
+        public async Task<PagedResult<ReviewDto>> GetPagedReviewsAsync(int movieId, PagingParams pagingParams)
+        {
+            if (!await _unitOfWork.Movies.ExistsAsync(movieId))
+                throw new NotFoundException($"Movie with Id: {movieId} does not exist");
+
+            var paged = await _unitOfWork.Reviews.GetPagedReviewsAsync(movieId, pagingParams);
+
+            return new PagedResult<ReviewDto>
+            {
+                Data = _mapper.Map<IEnumerable<ReviewDto>>(paged.Data),
+                Meta = paged.Meta
+            };
         }
 
         public async Task<IEnumerable<ReviewDto>?> GetReviewsByMovieAsync(int movieId)

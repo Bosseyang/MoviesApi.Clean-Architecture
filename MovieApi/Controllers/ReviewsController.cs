@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Movies.Core.DTOs;
 using Movies.Services.Contracts;
+using System.Text.Json;
 
 namespace MovieApi.Controllers;
 
@@ -12,13 +13,22 @@ public class ReviewsController : ControllerBase
 
     public ReviewsController(IServiceManager services) => _services = services;
 
-    // GET: /api/movies/{movieId}/reviews
+    // GET: /api/movies/{}
     [HttpGet("{movieId}/reviews")]
-    public async Task<ActionResult<IEnumerable<ReviewDto>>> GetReviews(int movieId)
+    public async Task<IActionResult> GetReviews(int movieId, [FromQuery] PagingParams pagingParams)
     {
-        var result = await _services.Reviews.GetReviewsByMovieAsync(movieId);
-        return result is null ? NotFound($"Movie with Id: {movieId} does not exist") : Ok(result);
+        var result = await _services.Reviews.GetPagedReviewsAsync(movieId, pagingParams);
+        Response.Headers.Append("X-Pagination", JsonSerializer.Serialize(result.Meta));
+        return Ok(result);
     }
+
+    //// GET: /api/movies/{movieId}/reviews
+    //[HttpGet("{movieId}/reviews")]
+    //public async Task<ActionResult<IEnumerable<ReviewDto>>> GetReviews(int movieId)
+    //{
+    //    var result = await _services.Reviews.GetReviewsByMovieAsync(movieId);
+    //    return result is null ? NotFound($"Movie with Id: {movieId} does not exist") : Ok(result);
+    //}
 
     // POST: /api/movies/{movieId}/reviews
     [HttpPost("{movieId}/reviews")]

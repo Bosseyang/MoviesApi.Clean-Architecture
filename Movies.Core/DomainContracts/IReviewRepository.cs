@@ -1,4 +1,5 @@
-﻿using Movies.Core.Entities;
+﻿using Movies.Core.DTOs;
+using Movies.Core.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,4 +16,5 @@ public interface IReviewRepository
     void Add(Review review);
     //void Update(Review review);
     void Remove(Review review);
+    Task<PagedResult<Review>> GetPagedReviewsAsync(int movieId, PagingParams pagingParams);
 }
