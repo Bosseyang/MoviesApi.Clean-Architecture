@@ -1,11 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Movies.Core.DTOs;
 
-namespace Movies.Services.Contracts;
-
-internal class IReviewService
+namespace Movies.Services.Contracts
 {
+    public interface IReviewService
+    {
+        Task<bool?> AddReviewAsync(int movieId, ReviewCreateDto dto);
+        Task<IEnumerable<ReviewDto>?> GetReviewsByMovieAsync(int movieId);
+    }
 }

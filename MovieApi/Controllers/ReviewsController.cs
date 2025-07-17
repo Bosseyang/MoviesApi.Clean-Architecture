@@ -1,51 +1,35 @@
-﻿using AutoMapper;
-using Microsoft.AspNetCore.Mvc;
-using Movies.Core.DomainContracts;
+﻿using Microsoft.AspNetCore.Mvc;
 using Movies.Core.DTOs;
-using Movies.Core.Entities;
+using Movies.Services.Contracts;
 
 namespace MovieApi.Controllers;
 
 [ApiController]
 [Route("api/movies")]
-//[Produces("application/json")]
-//TODO: Add Swashbuckle.AspNetCore.Annotations 
 public class ReviewsController : ControllerBase
 {
-    private readonly IMapper _mapper;
-    private readonly IUnitOfWork _unitOfWork;
+    private readonly IServiceManager _services;
 
-    public ReviewsController(IMapper mapper, IUnitOfWork unitOfWork)
-    {
-        _mapper = mapper;
-        _unitOfWork = unitOfWork;
-    }
+    public ReviewsController(IServiceManager services) => _services = services;
 
     // GET: /api/movies/{movieId}/reviews
     [HttpGet("{movieId}/reviews")]
     public async Task<ActionResult<IEnumerable<ReviewDto>>> GetReviews(int movieId)
     {
-        if (!await _unitOfWork.Reviews.MovieExistsAsync(movieId))
-            return NotFound($"Movie with Id: {movieId} does not exist");
-
-        return Ok(_mapper.Map<IEnumerable<ReviewDto>>(await _unitOfWork.Reviews.GetReviewsByMovieAsync(movieId)));
+        var result = await _services.Reviews.GetReviewsByMovieAsync(movieId);
+        return result is null ? NotFound($"Movie with Id: {movieId} does not exist") : Ok(result);
     }
 
     // POST: /api/movies/{movieId}/reviews
     [HttpPost("{movieId}/reviews")]
     public async Task<IActionResult> AddReview(int movieId, ReviewCreateDto dto)
     {
-        var exists = await _unitOfWork.Movies.ExistsAsync(movieId);
-        if (!exists) return NotFound($"Movie with Id: {movieId} does not exist");
-
-        var review = _mapper.Map<Review>(dto);
-        review.MovieId = movieId;
-
-        _unitOfWork.Reviews.Add(review);
-        await _unitOfWork.CompleteAsync();
-
-        return NoContent();
+        var success = await _services.Reviews.AddReviewAsync(movieId, dto);
+        return success switch
+        {
+            null => NotFound($"Movie with Id: {movieId} does not exist"),
+            false => BadRequest(),
+            true => NoContent()
+        };
     }
 }
-
-
