@@ -24,7 +24,7 @@ public class MovieRepository : /*RepositoryBase<Movie>,*/ IMovieRepository
         return await query.FirstOrDefaultAsync(m => m.Id == id);
 
     }
-    public async Task<Movie?> GetAllDetailsAsync(int id)
+    public async Task<Movie?> GetAllMovieDetailsAsync(int id)
     {
         return await _context.Movies
             .Include(m => m.MovieDetails)

@@ -3,6 +3,8 @@ using MovieApi.Extensions;
 using Movies.Core.DomainContracts;
 using Movies.Data;
 using Movies.Data.Repositories;
+using Movies.Services;
+using Movies.Services.Contracts;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<MovieContext>(options =>
@@ -22,6 +24,7 @@ builder.Services.AddScoped<IMovieRepository, MovieRepository>();
 builder.Services.AddScoped<IActorRepository, ActorRepository>();
 builder.Services.AddScoped<IReviewRepository, ReviewRepository>();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+builder.Services.AddScoped<IServiceManager, ServiceManager>();
 
 builder.Services.AddAutoMapper(cfg =>
 {
