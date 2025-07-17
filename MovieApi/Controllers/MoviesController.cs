@@ -27,14 +27,14 @@ namespace MovieApi.Controllers
         // GET: api/Movies
         [HttpGet]
         public async Task<ActionResult<IEnumerable<MovieDto>>> GetMovies() 
-            => Ok(_mapper.Map<IEnumerable<MovieDto>>(await _unitOfWork.Movies.GetAllAsync()));
+            => Ok(_mapper.Map<IEnumerable<MovieDto>>(await _unitOfWork.Movies.GetMoviesAsync()));
 
         // GET: api/Movies/{id}
         [HttpGet("{id}")]
         public async Task<ActionResult<MovieDto>> GetMovie(int id, [FromQuery] bool withactors = false)
         {
             if (!await _unitOfWork.Movies.ExistsAsync(id)) return NotFound();
-            return Ok(_mapper.Map<MovieDto>(await _unitOfWork.Movies.GetAsync(id, withactors)));
+            return Ok(_mapper.Map<MovieDto>(await _unitOfWork.Movies.GetMovieAsync(id, withactors)));
         }
 
         // GET: api/Movies/{id}/details
@@ -91,7 +91,7 @@ namespace MovieApi.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteMovie(int id)
         {
-            var movie = await _unitOfWork.Movies.GetAsync(id);
+            var movie = await _unitOfWork.Movies.GetMovieAsync(id);
             if (!await _unitOfWork.Movies.ExistsAsync(id)) return NotFound();
 
             _unitOfWork.Movies.Remove(movie!);
