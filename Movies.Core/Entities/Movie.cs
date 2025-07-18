@@ -7,7 +7,11 @@ public class Movie
     public string Title { get; set; } = null!;
     public int Year { get; set; }
     //TODO: Normalize later?
-    public string Genre { get; set; } = null!;
+    //public string Genre { get; set; } = null!;
+    // FK Genre
+    public int GenreId { get; set; }
+    public Genre Genre { get; set; } = null!;
+
     public int Duration { get; set; }
 
     // 1:1 Relation with MovieDetails, Each Movie has One MovieDetail
@@ -21,4 +25,5 @@ public class Movie
     // Manually setting up MovieActor table
     public ICollection<MovieActor> MovieActors { get; set; } = new List<MovieActor>();
 
+    
 }
