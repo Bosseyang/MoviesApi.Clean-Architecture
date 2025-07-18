@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Movies.Core.DTOs;
+using Movies.Services;
 using Movies.Services.Contracts;
 using System.Text.Json;
 
@@ -34,12 +35,14 @@ public class ReviewsController : ControllerBase
     [HttpPost("{movieId}/reviews")]
     public async Task<IActionResult> AddReview(int movieId, ReviewCreateDto dto)
     {
-        var success = await _services.Reviews.AddReviewAsync(movieId, dto);
-        return success switch
+        try
         {
-            null => NotFound($"Movie with Id: {movieId} does not exist"),
-            false => BadRequest(),
-            true => NoContent()
-        };
+            await _services.Reviews.AddReviewAsync(movieId, dto);
+            return NoContent();
+        }
+        catch (ProblemDetailsException ex)
+        {
+            return StatusCode(ex.ProblemDetails.Status ?? 400, ex.ProblemDetails);
+        }
     }
 }

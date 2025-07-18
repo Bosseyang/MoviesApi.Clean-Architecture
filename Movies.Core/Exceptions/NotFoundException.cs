@@ -10,5 +10,6 @@ public class NotFoundException : Exception
     public NotFoundException(string message, string title = "Not Found") : base(message)
     {
         Title = title;
+
     }
 }

@@ -5,11 +5,11 @@ public class ProblemDetailsException : Exception
 {
     public ProblemDetails ProblemDetails { get; }
 
-    public ProblemDetailsException(string title, int statusCode, string detail)
+    public ProblemDetailsException(int statusCode, string detail)
     {
         ProblemDetails = new ProblemDetails
         {
-            Title = title,
+            Title = "Invalid Request",
             Detail = detail,
             Status = statusCode,
         };

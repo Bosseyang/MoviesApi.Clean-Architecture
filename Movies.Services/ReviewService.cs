@@ -37,20 +37,21 @@ namespace Movies.Services
             return _mapper.Map<IEnumerable<ReviewDto>>(await _unitOfWork.Reviews.GetReviewsByMovieAsync(movieId));
         }
 
-        public async Task<bool?> AddReviewAsync(int movieId, ReviewCreateDto dto)
+        public async Task AddReviewAsync(int movieId, ReviewCreateDto dto)
         {
-            if (!await _unitOfWork.Movies.ExistsAsync(movieId)) return null;
+            if (!await _unitOfWork.Movies.ExistsAsync(movieId))
+                throw new NotFoundException("404: Not Found");
 
-            var movie = await _unitOfWork.Movies.GetMovieAsync(movieId);
+            var movie = await _unitOfWork.Movies.GetAllMovieDetailsAsync(movieId);
             if (movie!.Reviews?.Count >= 10)
-                throw ProblemDetailsException
+                throw new ProblemDetailsException(400, "A movie cannot have more than 10 reviews.");
 
             var review = _mapper.Map<Review>(dto);
             review.MovieId = movieId;
 
             _unitOfWork.Reviews.Add(review);
             await _unitOfWork.CompleteAsync();
-            return true;
+        
         }
     }
 }
