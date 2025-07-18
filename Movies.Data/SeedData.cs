@@ -1,4 +1,5 @@
 ﻿using Bogus;
+using Bogus.DataSets;
 using Microsoft.EntityFrameworkCore;
 using Movies.Core.Entities;
 using System.Globalization;
@@ -11,22 +12,23 @@ public class SeedData
     {
         if (await context.Movies.AnyAsync()) return;
 
+        var genres = GenerateGenres();
+        await context.AddRangeAsync(genres);
+
         var actors = GenerateActors(50);
         await context.AddRangeAsync(actors);
 
-        var movies = GenerateMovies(50, actors);
+        var movies = GenerateMovies(50, actors, genres);
         await context.AddRangeAsync(movies);
 
         await context.SaveChangesAsync();
     }
 
-    private static List<Movie> GenerateMovies(int numberOfMovies, List<Actor> actors)
+    private static List<Movie> GenerateMovies(int numberOfMovies, List<Actor> actors, List<Genre> genres)
     {
         var movies = new List<Movie>();
         Random rand = new Random();
-        var genreList = new List<string> { "Action", "Romance", "Drama", "Thriller", "Horror",
-            "Comedy", "Western", "Fantasy", "Science Fiction", "Documentary",
-            "Musical", "Crime", "Animation", "Sport", "Historical"};
+        
         var languageList = new List<string> { "Swedish", "English", "Spanish", "French", "German", "Italian" };
         var roleList = new List<string> { "Main Antagonist", "Main Protagonist", "Lead", "Supporting", "Background", "Extra", "Bit" };
 
@@ -38,7 +40,8 @@ public class SeedData
             var title = CultureInfo.CurrentCulture.TextInfo.ToTitleCase(titleJoin);
 
             var year = rand.Next(1900, 2025);
-            var genre = genreList[rand.Next(0, genreList.Count)];
+            var genre = genres[rand.Next(genres.Count)];
+
             //Duration in minutes
             var duration = rand.Next(45, 300);
             var budget = rand.Next(50000, 500000000);
@@ -53,6 +56,7 @@ public class SeedData
                 Title = title,
                 Year = year,
                 Genre = genre,
+                GenreId = genre.Id,
                 Duration = duration,
                 MovieDetails = new MovieDetails
                 {
@@ -67,14 +71,24 @@ public class SeedData
                 }).ToList(),
 
                 Reviews = GenerateReviews(rand.Next(1, 10)),
-                //MovieActors = movieActors,
 
             };
             movies.Add(movie);
         }
         return movies;
     }
-
+    private static List<Genre> GenerateGenres()
+    {
+        var genreList = new List<string> { "Action", "Romance", "Drama", "Thriller", "Horror",
+            "Comedy", "Western", "Fantasy", "Science Fiction", "Documentary",
+            "Musical", "Crime", "Animation", "Sport", "Historical"};
+        var genres = genreList.Select((name, index) => new Genre
+        {
+            //Id = index + 1,
+            Name = name
+        }).ToList();
+        return genres;
+    }
     private static List<Actor> GenerateActors(int numberOfActors)
     {
         var actors = new List<Actor>();
