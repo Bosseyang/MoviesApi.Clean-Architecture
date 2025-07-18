@@ -23,6 +23,7 @@ public class MovieActorConfiguration : IEntityTypeConfiguration<MovieActor>
             .WithMany(a => a.MovieActors)
             .HasForeignKey(ma => ma.ActorId);
 
+
         //builder.ToTable("MovieActor");
     }
 }
