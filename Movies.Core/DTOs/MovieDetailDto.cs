@@ -1,4 +1,5 @@
-﻿using System.Text.Json.Serialization;
+﻿using Movies.Core.Entities;
+using System.Text.Json.Serialization;
 
 namespace Movies.Core.DTOs;
 
