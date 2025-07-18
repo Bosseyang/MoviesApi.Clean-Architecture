@@ -13,6 +13,7 @@ public class UnitOfWork : IUnitOfWork
     public IMovieRepository Movies { get; }
     public IReviewRepository Reviews { get; }
     public IActorRepository Actors { get; }
+    public IGenreRepository Genres { get; }
 
     public UnitOfWork(MovieContext context)
     {
@@ -20,6 +21,7 @@ public class UnitOfWork : IUnitOfWork
         Movies = new MovieRepository(_context);
         Reviews = new ReviewRepository(_context);
         Actors = new ActorRepository(_context);
+        Genres = new GenreRepository(_context);
     }
 
     public async Task CompleteAsync()
