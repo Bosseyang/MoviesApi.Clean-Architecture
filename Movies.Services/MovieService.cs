@@ -60,8 +60,10 @@ public class MovieService : IMovieService
         var genre = await _unitOfWork.Genres.GetByNameAsync(dto.Genre);
         if (genre == null)
             throw new ProblemDetailsException(
-                StatusCodes.Status400BadRequest, $"Genre with name '{dto.Genre}' does not exist."
+                400, $"Genre with name '{dto.Genre}' does not exist."
             );
+        if (dto.MovieDetails.Budget < 0)
+            throw new ProblemDetailsException(400, $"Budget cannot be negative");
 
         var movie = _mapper.Map<Movie>(dto);
         movie.GenreId = genre.Id;

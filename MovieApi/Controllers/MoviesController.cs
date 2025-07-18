@@ -74,12 +74,7 @@ public class MoviesController : ControllerBase
         }
         catch (ProblemDetailsException ex)
         {
-            // Return ProblemDetails with correct content and status code
-            return Problem(
-                detail: $"Genre with name '{dto.Genre}' does not exist.",
-                statusCode: ex.ProblemDetails.Status,
-                title: "Validation Error"
-            );
+            return StatusCode(ex.ProblemDetails.Status ?? 400, ex.ProblemDetails);
         }
 
     }
