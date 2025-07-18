@@ -24,6 +24,12 @@ public class MovieConfiguration : IEntityTypeConfiguration<Movie>
         //Shadow property
         builder.Property<DateTime>("Edited");
 
-        //builder.ToTable("Movies");
+        builder.HasOne(m => m.Genre)
+            .WithMany(g => g.Movies)
+            .HasForeignKey(m => m.GenreId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        builder.ToTable("Movies");
+
     }
 }
