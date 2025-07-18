@@ -62,7 +62,5 @@ public class MapperProfile : Profile
             .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Actor.Name))
             .ForMember(dest => dest.BirthYear, opt => opt.MapFrom(src => src.Actor.BirthYear))
             .ForMember(dest => dest.Role, opt => opt.MapFrom(src => src.Role));
-
-        //CreateMap<MovieCreateDto, Genre>();
     }
 }

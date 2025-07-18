@@ -71,6 +71,11 @@ public class MovieRepository : /*RepositoryBase<Movie>,*/ IMovieRepository
     {
         return await _context.Movies.AnyAsync(m => m.Id == id);
     }
+
+    public async Task<bool> TitleExistsAsync(string title)
+    {
+        return await _context.Movies.AnyAsync(m => m.Title.ToLower() == title.ToLower());
+    }
     public void Add(Movie movie) => _context.Movies.Add(movie);
     public void Remove(Movie movie) => _context.Movies.Remove(movie);
     public void Update(Movie movie) => _context.Movies.Update(movie);

@@ -68,16 +68,25 @@ public class MovieService : IMovieService
 
         if (genre?.Name.ToLower() == "documentary")
         {
-            if (dto.MovieActors.Count > 10)
+            if (dto.ActorIds.Count > 10)
                 throw new ProblemDetailsException(400, "Documentaries may have max 10 actors.");
 
             if (dto.MovieDetails.Budget > 1_000_000)
                 throw new ProblemDetailsException(400, "Documentaries may not exceed 1 million in budget.");
         }
+        if (await _unitOfWork.Movies.TitleExistsAsync(dto.Title))
+            throw new ProblemDetailsException(400, "A movie with this title already exists.");
 
-    var movie = _mapper.Map<Movie>(dto);
+
+        var movie = _mapper.Map<Movie>(dto);
         movie.GenreId = genre!.Id;
         movie.Genre = genre;
+
+        movie.MovieActors = dto.ActorIds.Select(actorId => new MovieActor
+        {
+            ActorId = actorId,
+            Role = "Actor"
+        }).ToList();
 
         _unitOfWork.Movies.Add(movie);
         await _unitOfWork.CompleteAsync();

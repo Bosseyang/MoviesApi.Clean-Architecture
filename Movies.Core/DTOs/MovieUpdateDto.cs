@@ -4,8 +4,8 @@ namespace Movies.Core.DTOs;
 //PUT
 public class MovieUpdateDto
 {
-    [Required]
-    public string Title { get; set; } = string.Empty;
+    //[Required]
+    //public string Title { get; set; } = string.Empty;
     [Range(1900, 2025)]
     public int Year { get; set; }
     //TODO: Normalize later?

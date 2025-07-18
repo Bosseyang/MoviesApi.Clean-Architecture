@@ -18,5 +18,5 @@ public class MovieCreateDto
     //Navigation prop
     //[Required]
     public MovieDetailCreateDto MovieDetails { get; set; } = new();
-    public List<MovieActorDto> MovieActors { get; set; } = new();
+    public List<int> ActorIds { get; set; } = new();
 }
