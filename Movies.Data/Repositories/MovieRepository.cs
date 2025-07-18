@@ -13,7 +13,7 @@ public class MovieRepository : /*RepositoryBase<Movie>,*/ IMovieRepository
 
     public async Task<PagedResult<Movie>> GetPagedMoviesAsync(PagingParams pagingParams)
     {
-        var query = _context.Movies.AsQueryable();
+        var query = _context.Movies.Include(m=>m.Genre).AsQueryable();
 
         var totalItems = await query.CountAsync();
         var totalPages = (int)Math.Ceiling(totalItems / (double)pagingParams.PageSize);
@@ -47,7 +47,7 @@ public class MovieRepository : /*RepositoryBase<Movie>,*/ IMovieRepository
                 .Include(m => m.MovieActors)
                 .ThenInclude(m => m.Actor);
         }
-        return await query.FirstOrDefaultAsync(m => m.Id == id);
+        return await query.Include(m => m.Genre).FirstOrDefaultAsync(m => m.Id == id);
 
     }
 
@@ -56,6 +56,7 @@ public class MovieRepository : /*RepositoryBase<Movie>,*/ IMovieRepository
         return await _context.Movies
             .Include(m => m.MovieDetails)
             .Include(m => m.Reviews)
+            .Include(m => m.Genre)
             .Include(m => m.MovieActors).ThenInclude(ma => ma.Actor)
             .FirstOrDefaultAsync(m => m.Id == id);
     }
@@ -63,6 +64,7 @@ public class MovieRepository : /*RepositoryBase<Movie>,*/ IMovieRepository
     {
         return await _context.Movies
             .Include(m => m.MovieDetails)
+            .Include(m => m.Genre)
             .FirstOrDefaultAsync(m => m.Id == id);
     }
     public async Task<bool> ExistsAsync(int id)
