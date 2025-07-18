@@ -36,7 +36,8 @@ public class ActorService : IActorService
     {
         if (!await _unitOfWork.Actors.MovieExistsAsync(movieId)) return null;
         if (!await _unitOfWork.Actors.ActorExistsAsync(actorId)) return null;
-        if (await _unitOfWork.Actors.ActorAlreadyInMovieAsync(movieId, actorId)) return null;
+        if (await _unitOfWork.Actors.ActorAlreadyInMovieAsync(movieId, actorId))
+            throw new ProblemDetailsException(400, $"Actor with id: {actorId} is already in movie with id: {movieId}");
 
         var movie = await _unitOfWork.Actors.GetMovieWithActorsAsync(movieId);
         if (movie is null) return null;
