@@ -19,4 +19,5 @@ public class GenreRepository : IGenreRepository
     {
         return await _context.Genres.FirstOrDefaultAsync(g => g.Name == name);
     }
+
 }

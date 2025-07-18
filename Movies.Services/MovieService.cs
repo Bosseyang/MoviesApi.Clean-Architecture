@@ -65,8 +65,18 @@ public class MovieService : IMovieService
         if (dto.MovieDetails.Budget < 0)
             throw new ProblemDetailsException(400, $"Budget cannot be negative");
 
-        var movie = _mapper.Map<Movie>(dto);
-        movie.GenreId = genre.Id;
+
+        if (genre?.Name.ToLower() == "documentary")
+        {
+            if (dto.MovieActors.Count > 10)
+                throw new ProblemDetailsException(400, "Documentaries may have max 10 actors.");
+
+            if (dto.MovieDetails.Budget > 1_000_000)
+                throw new ProblemDetailsException(400, "Documentaries may not exceed 1 million in budget.");
+        }
+
+    var movie = _mapper.Map<Movie>(dto);
+        movie.GenreId = genre!.Id;
         movie.Genre = genre;
 
         _unitOfWork.Movies.Add(movie);
@@ -78,7 +88,8 @@ public class MovieService : IMovieService
     public async Task<bool> UpdateAsync(int id, MovieUpdateDto dto)
     {
         var movie = await _unitOfWork.Movies.GetMovieDetailsAsync(id);
-        if (movie == null) return false;
+        if (movie == null)
+            throw new ProblemDetailsException(400, $"Movie with id '{id}' does not exist.");
 
         var genre = await _unitOfWork.Genres.GetByNameAsync(dto.Genre);
         if (genre == null)
@@ -88,8 +99,19 @@ public class MovieService : IMovieService
         if (dto.Budget < 0)
             throw new ProblemDetailsException(400, $"Budget cannot be negative");
 
+
+        if (genre?.Name.ToLower() == "documentary")
+        {
+            if (dto.MovieActors.Count > 10)
+                throw new ProblemDetailsException(400, "Documentaries may have max 10 actors.");
+
+            if (dto.Budget > 1_000_000)
+                throw new ProblemDetailsException(400, "Documentaries may not exceed 1 million in budget.");
+        }
+
+
         _mapper.Map(dto, movie);
-        movie.GenreId = genre.Id;
+        movie.GenreId = genre!.Id;
         movie.Genre = genre;
 
         _unitOfWork.Movies.Update(movie);

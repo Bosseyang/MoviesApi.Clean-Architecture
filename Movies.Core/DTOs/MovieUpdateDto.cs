@@ -18,4 +18,6 @@ public class MovieUpdateDto
     public string Language { get; set; } = string.Empty;
     [Range(0, int.MaxValue)]
     public int Budget { get; set; }
+
+    public List<MovieActorDto> MovieActors { get; set; } = new();
 }

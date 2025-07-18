@@ -42,17 +42,18 @@ public class ActorRepository : IActorRepository
             .FirstOrDefaultAsync(m => m.Id == movieId);
     }
 
-    public async Task AddActorToMovieAsync(Movie movie, int actorId)
+    public async Task AddActorToMovieAsync(Movie movie, int actorId, string role)
     {
         movie.MovieActors.Add(new MovieActor
         {
             MovieId = movie.Id,
-            ActorId = actorId
+            ActorId = actorId,
+            Role = role
         });
 
         await _context.SaveChangesAsync();
     }
-    public async Task AddActorToMovieAsync(int movieId, int actorId)
+    public async Task AddActorToMovieAsync(int movieId, int actorId, string role)
     {
         var movie = await _context.Movies
             .Include(m => m.MovieActors)
@@ -63,8 +64,10 @@ public class ActorRepository : IActorRepository
         movie.MovieActors.Add(new MovieActor
         {
             MovieId = movieId,
-            ActorId = actorId
+            ActorId = actorId,
+            Role = role,
         });
+    
 
         await _context.SaveChangesAsync();
     }

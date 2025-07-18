@@ -9,10 +9,8 @@ public class MovieCreateDto
     public string Title { get; set; } = string.Empty;
     [Range(1900, 2025)]
     public int Year { get; set; }
-    //TODO: Normalize later?
     [Required]
     [MaxLength(255, ErrorMessage = "Max length is 255.")]
-    //public Genre Genre { get; set; } = default!;
     public string Genre { get; set; } = string.Empty;
     [Range(45, 300)]
     public int Duration { get; set; }
@@ -20,4 +18,5 @@ public class MovieCreateDto
     //Navigation prop
     //[Required]
     public MovieDetailCreateDto MovieDetails { get; set; } = new();
+    public List<MovieActorDto> MovieActors { get; set; } = new();
 }

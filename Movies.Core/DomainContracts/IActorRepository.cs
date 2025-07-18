@@ -7,8 +7,8 @@ namespace Movies.Data.Repositories
     {
         Task<bool> ActorAlreadyInMovieAsync(int movieId, int actorId);
         Task<bool> ActorExistsAsync(int actorId);
-        Task AddActorToMovieAsync(Movie movie, int actorId);
-        Task AddActorToMovieAsync(int movieId, int actorId);
+        Task AddActorToMovieAsync(Movie movie, int actorId, string role);
+        Task AddActorToMovieAsync(int movieId, int actorId, string role);
         Task AddActorToMovieWithRoleAsync(int movieId, MovieActor movieActor);
         Task<IEnumerable<MovieActor>> GetActorsByMovieAsync(int movieId);
         Task<Movie?> GetMovieWithActorsAsync(int movieId);

@@ -34,15 +34,17 @@ public class ActorService : IActorService
 
     public async Task<MovieDto?> AddActorToMovieAsync(int movieId, int actorId)
     {
-        if (!await _unitOfWork.Actors.MovieExistsAsync(movieId)) return null;
-        if (!await _unitOfWork.Actors.ActorExistsAsync(actorId)) return null;
+        if (!await _unitOfWork.Movies.ExistsAsync(movieId))
+            throw new ProblemDetailsException(400, $"Movie with id: {movieId} does not exist");
+        if (!await _unitOfWork.Actors.ActorExistsAsync(actorId))
+            throw new ProblemDetailsException(400, $"Actor with id: {actorId} does not exist");
         if (await _unitOfWork.Actors.ActorAlreadyInMovieAsync(movieId, actorId))
             throw new ProblemDetailsException(400, $"Actor with id: {actorId} is already in movie with id: {movieId}");
 
         var movie = await _unitOfWork.Actors.GetMovieWithActorsAsync(movieId);
-        if (movie is null) return null;
+        if (movie is null) throw new ProblemDetailsException(400, $"Movie with id: {movieId} does not exist");
 
-        await _unitOfWork.Actors.AddActorToMovieAsync(movie, actorId);
+        await _unitOfWork.Actors.AddActorToMovieAsync(movie, actorId, "Actor");
 
         return _mapper.Map<MovieDto>(movie);
     }
