@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Movies.Core.DTOs;
+using Movies.Services;
 using Movies.Services.Contracts;
 
 [Route("api/movies")]
@@ -46,16 +47,41 @@ public class MoviesController : ControllerBase
     [HttpPut("{id}")]
     public async Task<IActionResult> UpdateMovie(int id, MovieUpdateDto dto)
     {
-        var updated = await _services.Movies.UpdateAsync(id, dto);
-        return updated ? NoContent() : NotFound();
+        try
+        {
+            var updated = await _services.Movies.UpdateAsync(id, dto);
+            return updated ? NoContent() : NotFound();
+        }
+        catch (ProblemDetailsException ex)
+        {
+            // Return ProblemDetails with correct content and status code
+            return Problem(
+                detail: $"Genre with name '{dto.Genre}' does not exist.",
+                statusCode: ex.ProblemDetails.Status,
+                title: "Validation Error"
+            );
+        }
     }
 
     // POST: api/movies
     [HttpPost]
     public async Task<ActionResult<MovieDto>> CreateMovie(MovieCreateDto dto)
     {
-        var createdMovie = await _services.Movies.CreateAsync(dto);
-        return CreatedAtAction(nameof(GetMovie), new { id = createdMovie.Id }, createdMovie);
+        try
+        {
+            var created = await _services.Movies.CreateAsync(dto);
+            return CreatedAtAction(nameof(GetMovie), new { id = created.Id }, created);
+        }
+        catch (ProblemDetailsException ex)
+        {
+            // Return ProblemDetails with correct content and status code
+            return Problem(
+                detail: $"Genre with name '{dto.Genre}' does not exist.",
+                statusCode: ex.ProblemDetails.Status,
+                title: "Validation Error"
+            );
+        }
+
     }
 
     // DELETE: api/movies/1
