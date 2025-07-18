@@ -46,6 +46,10 @@ namespace Movies.Services
             if (movie!.Reviews?.Count >= 10)
                 throw new ProblemDetailsException(400, "A movie cannot have more than 10 reviews.");
 
+            var age = DateTime.Now.Year - movie.Year;
+            if (age > 20 && movie.Reviews?.Count >= 5)
+                throw new ProblemDetailsException(400, "Movies older than 20 years may only have 5 reviews.");
+
             var review = _mapper.Map<Review>(dto);
             review.MovieId = movieId;
 

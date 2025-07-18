@@ -70,7 +70,7 @@ public class SeedData
                     Role = roleList[rand.Next(roleList.Count)]
                 }).ToList(),
 
-                Reviews = GenerateReviews(rand.Next(1, 10)),
+                Reviews = GenerateReviews(rand.Next(1, 5)),
 
             };
             movies.Add(movie);
