@@ -5,6 +5,7 @@ using Movies.Data;
 using Movies.Data.Repositories;
 using Movies.Services;
 using Movies.Services.Contracts;
+using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<MovieContext>(options =>
@@ -12,7 +13,8 @@ builder.Services.AddDbContext<MovieContext>(options =>
 
 // Add services to the container.
 
-builder.Services.AddControllers(opt => opt.ReturnHttpNotAcceptable = true);
+builder.Services.AddControllers(opt => opt.ReturnHttpNotAcceptable = true)
+            /*.AddJsonOptions(x => x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve)*/; 
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 
 // builder.Services.AddSwaggerGen(opt =>

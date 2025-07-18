@@ -16,6 +16,7 @@ namespace Movies.Data
         public DbSet<Review> Reviews { get; set; }
         public DbSet<Actor> Actors { get; set; }
         public DbSet<MovieActor> MovieActors { get; set; }
+        public DbSet<Genre> Genres { get; set; }
 
         //TODO: Add configurations with fluent api here
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -23,6 +24,7 @@ namespace Movies.Data
             //modelBuilder.ApplyConfiguration(new MovieConfiguration());
             //modelBuilder.ApplyConfiguration(new MovieDetailsConfiguration());
             modelBuilder.ApplyConfiguration(new MovieActorConfiguration());
+            modelBuilder.ApplyConfiguration(new GenreConfiguration());
         }
 
         //public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)

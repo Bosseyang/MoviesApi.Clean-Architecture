@@ -4,6 +4,7 @@ namespace Movies.Services.Contracts
 {
     public interface IMovieService
     {
+        Task<PagedResult<MovieDto>> GetPagedMoviesAsync(PagingParams pagingParams);
         Task<MovieDto> CreateAsync(MovieCreateDto dto);
         Task<bool> DeleteAsync(int id);
         Task<MovieDto?> GetMovieByIdAsync(int id, bool withActors);

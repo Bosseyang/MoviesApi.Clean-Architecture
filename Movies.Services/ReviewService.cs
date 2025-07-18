@@ -41,6 +41,10 @@ namespace Movies.Services
         {
             if (!await _unitOfWork.Movies.ExistsAsync(movieId)) return null;
 
+            var movie = await _unitOfWork.Movies.GetMovieAsync(movieId);
+            if (movie!.Reviews?.Count >= 10)
+                throw ProblemDetailsException
+
             var review = _mapper.Map<Review>(dto);
             review.MovieId = movieId;
 

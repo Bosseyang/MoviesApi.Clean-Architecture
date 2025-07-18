@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 namespace Movies.Services;
 
 using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Movies.Core.DomainContracts;
 using Movies.Core.DTOs;
@@ -56,20 +57,39 @@ public class MovieService : IMovieService
 
     public async Task<MovieDto> CreateAsync(MovieCreateDto dto)
     {
+        var genre = await _unitOfWork.Genres.GetByNameAsync(dto.Genre);
+        if (genre == null)
+            throw new ProblemDetailsException(
+                $"Genre with name '{dto.Genre}' does not exist.",
+                StatusCodes.Status400BadRequest
+            );
+
         var movie = _mapper.Map<Movie>(dto);
+        movie.GenreId = genre.Id;
+        movie.Genre = genre;
+
         _unitOfWork.Movies.Add(movie);
         await _unitOfWork.CompleteAsync();
 
         return _mapper.Map<MovieDto>(movie);
     }
 
-
     public async Task<bool> UpdateAsync(int id, MovieUpdateDto dto)
     {
         var movie = await _unitOfWork.Movies.GetMovieDetailsAsync(id);
         if (movie == null) return false;
 
+        var genre = await _unitOfWork.Genres.GetByNameAsync(dto.Genre);
+        if (genre == null)
+            throw new ProblemDetailsException(
+                $"Genre with name '{dto.Genre}' does not exist.",
+                StatusCodes.Status400BadRequest
+            );
+
         _mapper.Map(dto, movie);
+        movie.GenreId = genre.Id;
+        movie.Genre = genre;
+
         _unitOfWork.Movies.Update(movie);
         await _unitOfWork.CompleteAsync();
 
